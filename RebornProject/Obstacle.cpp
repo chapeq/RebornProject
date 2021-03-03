@@ -7,15 +7,20 @@ Obstacle::Obstacle(float positionX, float positionY, sf::Vector2f size, sf::Colo
 	m_rect.setPosition(pos);
 	m_rect.setSize(size);
 	m_rect.setFillColor(color);
-	SetBoundingBox(pos, size);
+	
 }
 
 Obstacle::~Obstacle()
 {
 }
 
-void Obstacle::draw(sf::RenderTarget& target, sf::RenderStates states)const
+void Obstacle::draw(sf::RenderTarget& target)
 {
 	target.draw(m_rect);
+}
+
+const sf::RectangleShape Obstacle::getShape() const
+{
+	return m_rect;
 }
 

@@ -1,16 +1,16 @@
 #pragma once
 
-class Player : public sf::Drawable, public BoxCollideable
+class Player 
 {
 public:
 	Player(float positionX, float positionY, int radius, sf::Color color);
 	~Player();
 
 	void Move(float speed);
+	const sf::CircleShape getShape() const;
+	void draw(sf::RenderTarget& target);
 	
 private:
 	sf::CircleShape m_cercle;
-	sf::Vector2f m_pos;
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const;
-
+	
 };
