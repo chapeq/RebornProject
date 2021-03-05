@@ -1,6 +1,8 @@
 #pragma once
 #include <Player.h>
 #include <Obstacle.h>
+#include <Collectible.h>
+#include <vector>
 
 class Game
 {
@@ -14,9 +16,22 @@ public:
 
 private:
 	sf::RenderWindow m_window;
-	sf::Event m_ev;
+
+	float obstSpawnTimer;
+	float obstSpawnTimerMax;
+	float colSpawnTimer;
+	float colSpawnTimerMax;
+	bool isPause;
 
 	Player *player;
-	Obstacle *obst;
+	std::vector<Obstacle*> obstacles;
+	std::vector<Collectible*> collectibles;
+
+	void EventHandler();
+	void SpawnObstacles();
+	void UpdateObstacles();
+	void SpawnCollectibles();
+	void UpdateCollectibles();
+
 };
 

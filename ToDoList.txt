@@ -1,0 +1,13 @@
+- Créer/afficher player (cercle)  - Done
+- Créer/afficher un obstacle (carré) - Done
+- Detection collision obstacle/player - Done
+- Spawn obstacles - Done
+- Créer/afficher un collectible (triangle) - Done
+- Spawn collectibles - Done
+
+- Gestion spawn objets (timing,objets non superposés)
+- Suppression objets en dehors de la fenetre
+- Ajout points player - score
+- Gestion restart game (pause game, reset objets, grossir player, garder score)
+- Gestion Game Over (condition de game over? si le player atteint une certaine taille ?)
+- Ajout UI : Start game - score - high score - Restart Game - Game Over

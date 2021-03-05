@@ -1,20 +1,35 @@
 #include "stdafx.h"
 #include "Game.h"
 #include <iostream>
+#include <vector>
 
 Game::Game()
 {
 	m_window.create(sf::VideoMode(800, 600), "Reborn", sf::Style::Titlebar | sf::Style::Close);
 	m_window.setFramerateLimit(60);
-
-	 player = new Player(390, 550, 20, sf::Color::Blue);
-
-	 obst = new Obstacle(200, 200, sf::Vector2f(50, 50), (sf::Color::Red));
+	
+	obstSpawnTimerMax = 50.f ;
+	obstSpawnTimer = obstSpawnTimerMax;
+	colSpawnTimerMax = 30.f;
+	colSpawnTimer = colSpawnTimerMax;
+	isPause = false;
+	
+	player = new Player(m_window.getSize().x /2, m_window.getSize().y - 100 , 20);
 }
 
 Game::~Game()
 {
-	m_window.close();
+	delete player;
+	for (auto& e : obstacles)
+	{
+		delete e;
+	}
+	obstacles.clear();
+	for (auto& e : collectibles)
+	{
+		delete e;
+	}
+	collectibles.clear();
 }
 
 const bool Game::IsRunning() const
@@ -22,37 +37,117 @@ const bool Game::IsRunning() const
 	return m_window.isOpen();
 }
 
-void Game::Update()
+
+void Game::SpawnObstacles()
 {
-	while (m_window.pollEvent(m_ev))
+	Obstacle* obst = new Obstacle(static_cast<float>(rand() % static_cast<int>(m_window.getSize().x - 70.f)), 0.f);
+	obstacles.push_back(obst);
+}
+
+void Game::SpawnCollectibles()
+{
+	float x = static_cast<float>(rand() % static_cast<int>(m_window.getSize().x - 20.f));
+	float y = 0.0f;
+	int NbrCollect = (rand() % 10);
+	for (int i = 0; i < NbrCollect; i++)
 	{
-		switch (m_ev.type)
+		Collectible* col = new Collectible(x, y + (i*50.f));
+		collectibles.push_back(col);
+	}
+}
+
+void Game::UpdateObstacles()
+{
+	if (obstSpawnTimer >= obstSpawnTimerMax)
+	{
+		SpawnObstacles();
+		SpawnObstacles();
+		obstSpawnTimer = 0.f;
+	}
+	else
+		obstSpawnTimer += 1.f;
+
+	for (auto& e : obstacles)
+	{
+		e->Move();
+	}
+}
+
+void Game::UpdateCollectibles()
+{
+	if (colSpawnTimer >= colSpawnTimerMax)
+	{
+		SpawnCollectibles();
+		colSpawnTimer = 0.f;
+	}
+	else
+		colSpawnTimer += 1.f;
+
+	for (auto& e : collectibles)
+	{
+		e->Move();
+	}
+}
+
+void Game::EventHandler()
+{
+	sf::Event event;
+	while (m_window.pollEvent(event))
+	{
+		switch (event.type)
 		{
 		case sf::Event::Closed:
 			m_window.close();
 			break;
 		case sf::Event::KeyPressed:
-			if (m_ev.key.code == sf::Keyboard::Escape)
+			if (event.key.code == sf::Keyboard::Escape)
 				m_window.close();
+			else if ((event.key.code == sf::Keyboard::Space) && (isPause))
+				isPause = false;
 			break;
 		}
 
 	}
+}
 
-	player->Move(2.0);
+void Game::Update()
+{
+	
+	EventHandler();
 
+	if (isPause)
+		return;
+
+	UpdateObstacles();
+	UpdateCollectibles();
+
+	player->Move(5.0);
+	
+	
 	//collision
-	if (player->getShape().getGlobalBounds().intersects(obst->getShape().getGlobalBounds()))
+	for (auto& e : obstacles)
 	{
-		std::cout << "GAME OVER !!!!" << std::endl;
+		if(e->IsCollidingPlayer(player))
+		{
+			std::cout << "GAME OVER !!!!" << std::endl;
+			isPause = true;
+
+		}
 	}
 }
 
 void Game::Render()
 {
 	m_window.clear();
-	player->draw(m_window);
-	obst->draw(m_window);
+	for (auto& e : obstacles)
+	{
+		e->Draw(m_window);
+	}
+	for (auto& e : collectibles)
+	{
+		e->Draw(m_window);
+	}
+	player->Draw(m_window);
 	m_window.display();
 }
 
