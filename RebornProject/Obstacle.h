@@ -7,9 +7,9 @@ public:
 	Obstacle(float positionX, float positionY);
 	~Obstacle();
 
-	const sf::RectangleShape getShape() const;
+	const sf::FloatRect getBounds() const;
 	void Draw(sf::RenderTarget& target);
-	void Move();
+	void Move(float speed);
 	bool IsCollidingPlayer(Player *player);
 
 private:

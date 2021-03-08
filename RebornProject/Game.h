@@ -17,10 +17,10 @@ public:
 private:
 	sf::RenderWindow m_window;
 
-	float obstSpawnTimer;
-	float obstSpawnTimerMax;
-	float colSpawnTimer;
-	float colSpawnTimerMax;
+	float obstacleSpawnTimer;
+	float obstacleSpawnTimerMax;
+	float collectibleSpawnTimer;
+	float collectibleSpawnTimerMax;
 	bool isPause;
 
 	Player *player;
@@ -28,10 +28,11 @@ private:
 	std::vector<Collectible*> collectibles;
 
 	void EventHandler();
-	void SpawnObstacles();
 	void UpdateObstacles();
-	void SpawnCollectibles();
 	void UpdateCollectibles();
+	void SpawnObstacles();
+	void SpawnCollectibles();
+	void Restart();
 
 };
 

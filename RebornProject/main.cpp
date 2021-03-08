@@ -8,6 +8,7 @@ int main()
 {
 	
 	Game game;
+	srand((unsigned)time(NULL));
 
 	std::cout << "HELLO" << std::endl;
 

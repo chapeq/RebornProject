@@ -24,6 +24,7 @@
     <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Collectible.cpp" />
+    <ClCompile Include="Item.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -40,6 +41,7 @@
     <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Collectible.h" />
+    <ClInclude Include="Item.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">

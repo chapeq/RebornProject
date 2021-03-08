@@ -1,15 +1,15 @@
 #pragma once
 #include <Player.h>
 
-class Collectible
+class Collectible 
 {
 public:
 	Collectible(float positionX, float positionY);
 	~Collectible();
 
-	const sf::CircleShape getShape() const;
+	const sf::FloatRect getBounds() const;
 	void Draw(sf::RenderTarget& target);
-	void Move();
+	void Move(float speed);
 	bool IsCollidingPlayer(Player* player);
 
 private:

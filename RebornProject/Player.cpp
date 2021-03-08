@@ -7,7 +7,7 @@ Player::Player(float positionX, float positionY, int radius)
 	m_cercle.setPosition(pos);
 	m_cercle.setRadius(radius);
 	m_cercle.setFillColor(sf::Color::Cyan);
-	
+	score = 0;
 }
 
 Player::~Player()
@@ -32,7 +32,27 @@ void Player::Draw(sf::RenderTarget& target)
 	target.draw(m_cercle);
 }
 
-const sf::CircleShape Player::getShape() const
+const sf::FloatRect Player::getBounds() const
 {
-	return m_cercle;
+	return m_cercle.getGlobalBounds();
+}
+
+float Player::GetRadius()
+{
+	return m_cercle.getRadius();
+}
+
+void Player::SetRadius(float newRad)
+{
+	m_cercle.setRadius(newRad);
+}
+
+int Player::GetScore()
+{
+	return score;
+}
+
+void Player::AddPoints(int points)
+{
+	score += points;
 }

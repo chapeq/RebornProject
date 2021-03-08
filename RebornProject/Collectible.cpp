@@ -19,18 +19,18 @@ void Collectible::Draw(sf::RenderTarget& target)
 	target.draw(m_triangle);
 }
 
-const sf::CircleShape Collectible::getShape() const
+const sf::FloatRect Collectible::getBounds() const
 {
-	return m_triangle;
+	return m_triangle.getGlobalBounds();
 }
 
-void Collectible::Move()
+void Collectible::Move(float speed)
 {
-	m_triangle.move(0.f, 7.f);
+	m_triangle.move(0.f, speed);
 }
 
 bool Collectible::IsCollidingPlayer(Player *player)
 {
-	return player->getShape().getGlobalBounds().intersects(m_triangle.getGlobalBounds());
+	return player->getBounds().intersects(m_triangle.getGlobalBounds());
 }
 

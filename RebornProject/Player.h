@@ -7,10 +7,17 @@ public:
 	~Player();
 
 	void Move(float speed);
-	const sf::CircleShape getShape() const;
+	const sf::FloatRect getBounds() const;
 	void Draw(sf::RenderTarget& target);
-	
+
+	void SetRadius(float newRad);
+	float GetRadius();
+	void AddPoints(int points);
+	int GetScore();
+
+
 private:
 	sf::CircleShape m_cercle;
+	int score;
 	
 };

@@ -19,18 +19,18 @@ void Obstacle::Draw(sf::RenderTarget& target)
 	target.draw(m_rect);
 }
 
-const sf::RectangleShape Obstacle::getShape() const
+const sf::FloatRect Obstacle::getBounds() const
 {
-	return m_rect;
+	return m_rect.getGlobalBounds();
 }
 
-void Obstacle::Move()
+void Obstacle::Move(float speed)
 {
-	m_rect.move(0.f, 7.f);
+	m_rect.move(0.f, speed);
 }
 
 bool Obstacle::IsCollidingPlayer(Player *player)
 {
-	return player->getShape().getGlobalBounds().intersects(m_rect.getGlobalBounds());
+	return player->getBounds().intersects(m_rect.getGlobalBounds());
 }
 
