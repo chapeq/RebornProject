@@ -48,4 +48,7 @@
       <UniqueIdentifier>{f630cd3c-1cea-471c-9a95-a35b86a8dd9e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RebornProject.rc" />
+  </ItemGroup>
 </Project>

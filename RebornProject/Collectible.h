@@ -4,13 +4,15 @@
 class Collectible 
 {
 public:
-	Collectible(float positionX, float positionY);
+	Collectible();
 	~Collectible();
 
 	const sf::FloatRect getBounds() const;
+	void SetPosition(float x, float y);
+	sf::Vector2f GetPosition();
+	float GetRadius() const;
 	void Draw(sf::RenderTarget& target);
 	void Move(float speed);
-	bool IsCollidingPlayer(Player* player);
 
 private:
 	sf::CircleShape m_triangle;

@@ -20,9 +20,29 @@ Game::Game()
 	obstacleSpawnTimer = obstacleSpawnTimerMax;
 	collectibleSpawnTimerMax = COLLECTIBLE_TIMER;
 	collectibleSpawnTimer = collectibleSpawnTimerMax;
-	isPause = false;
+
+	isPause = true;
 	
-	player = new Player(m_window.getSize().x /2, m_window.getSize().y - 100 , 20);
+	player = new Player();
+	player->SetPosition(sf::Vector2f(m_window.getSize().x / 2, m_window.getSize().y - 50));
+
+	if (!fontStart.loadFromFile("Assets/retro.ttf"))
+		std::cout << "ERROR Failed to load font" << std::endl;
+
+	startText.setFont(this->fontStart);
+	startText.setCharacterSize(80);
+	startText.setFillColor(sf::Color::White);
+	startText.setPosition(100, 200);
+	startText.setString("Press Space To Start !");
+
+	if (!fontScore.loadFromFile("Assets/rainyhearts.ttf"))
+		std::cout << "ERROR Failed to load font" << std::endl;
+
+	scoreText.setFont(this->fontScore);
+	scoreText.setCharacterSize(50);
+	scoreText.setFillColor(sf::Color::White);
+	scoreText.setPosition(0, 0);
+	scoreText.setString("Score : 0");
 }
 
 Game::~Game()
@@ -48,26 +68,34 @@ const bool Game::IsRunning() const
 
 void Game::SpawnObstacles()
 {
-	float x = static_cast<float>(rand() % static_cast<int>(m_window.getSize().x));
-	float y = 0.0f;
-	Obstacle* obst = new Obstacle(x,y);
+	Obstacle* obst = new Obstacle();
+	float x = static_cast<float>(rand() % static_cast<int>(m_window.getSize().x - obst->getSize().x));
+	float y = -10.0f;
+	obst->SetPosition(x, y);
 	obstacles.push_back(obst);
 }
 
 void Game::SpawnCollectibles()
 {
-	int  randNbrCol = rand() % NBR_MAX_COLLECTIBLE;
-	float x = static_cast<float>(rand() % static_cast<int>(m_window.getSize().x));
-	for (int i = 0; i < randNbrCol; i++)
+	int  randNbrCol = rand() % NBR_MAX_COLLECTIBLE + 2;
+	Collectible* firstcol = new Collectible();
+	float x = static_cast<float>(rand() % static_cast<int>(m_window.getSize().x - (firstcol->GetRadius()*2)));
+	float y = -10.0f;
+	firstcol->SetPosition(x, y);
+	collectibles.push_back(firstcol);
+
+	for (int i = 1; i < randNbrCol+1 ; i++)
 	{
-		Collectible* col = new Collectible(x, i * 50.0f);
-		collectibles.push_back(col);
+		Collectible* nextcol = new Collectible();
+		nextcol->SetPosition(x , i * ((nextcol->GetRadius()*2) + 10.0f));
+		collectibles.push_back(nextcol);
 	}
 			
 }
 
 void Game::UpdateObstacles()
 {
+	//Spawn
 	int randNbrObst = rand() % NBR_MAX_OBSTACLE + 1;
 
 	if (obstacleSpawnTimer >= obstacleSpawnTimerMax)
@@ -81,16 +109,34 @@ void Game::UpdateObstacles()
 	else
 		obstacleSpawnTimer += 1.f;
 
+	//Update
+	int cpt = 0;
 	for (auto& e : obstacles)
 	{
+		//Move Down
 		e->Move(SPEED_ITEMS);
+
+		// check player collision
+		if (e->getBounds().intersects(player->getBounds()))
+		{
+			Restart();
+		}
+
+		//Delete if out of bounds
+		if (e->GetPosition().y > m_window.getSize().y)
+		{
+			delete obstacles.at(cpt);
+			obstacles.erase(obstacles.begin() + cpt);
+		}
+
+		cpt++;
 	}
 }
 
 
 void Game::UpdateCollectibles()
 {
-	
+	//Spawn
 	if (collectibleSpawnTimer >= collectibleSpawnTimerMax)
 	{
 		SpawnCollectibles();
@@ -98,17 +144,56 @@ void Game::UpdateCollectibles()
 	}
 	else
 		collectibleSpawnTimer += 1.f;
-
-	for (auto& e : collectibles)
+	
+	//Update
+	for (auto& e : obstacles)
 	{
-		e->Move(SPEED_ITEMS);
+		//Delete if overlap by obstacle
+		for (int i = 0; i < collectibles.size(); i++)
+		{
+			if (collectibles[i]->getBounds().intersects(e->getBounds()))
+			{
+				delete collectibles.at(i);
+				collectibles.erase(collectibles.begin() + i);
+			}
+		}
+	}
+	
+	for (int i = 0; i < collectibles.size(); i++)
+	{
+
+		//Move Down
+		collectibles[i]->Move(SPEED_ITEMS);
+
+		//Check collision with player
+		if (collectibles[i]->getBounds().intersects(player->getBounds()))
+		{
+			delete collectibles.at(i);
+			collectibles.erase(collectibles.begin() + i);
+			player->AddPoints(1);
+			std::string score = "Score : " + std::to_string(player->GetScore());
+			scoreText.setString(score);
+		}
+	}
+
+	for (int i = 0; i < collectibles.size(); i++)
+	{
+		//Delete if out of bounds
+		if (collectibles[i]->GetPosition().y > m_window.getSize().y)
+		{
+			delete collectibles.at(i);
+			collectibles.erase(collectibles.begin() + i);
+		}
+
 	}
 }
 
 void Game::Restart()
 {
-	std::cout << "GAME OVER !!!!" << std::endl;
-	std::cout << "Hit Space to Restart" << std::endl;
+	startText.setString("You Died ! Press R To Reborn !");
+	startText.setPosition(70, 200);
+	startText.setCharacterSize(70);
+	startText.setFillColor(sf::Color::White);
 	isPause = true;
 
 	for (auto& e : obstacles)
@@ -116,13 +201,16 @@ void Game::Restart()
 		delete e;
 	}
 	obstacles.clear();
-	for (auto& e : collectibles)
+	for (auto& f : collectibles)
 	{
-		delete e;
+		delete f;
 	}
 	collectibles.clear();
-
-	player->SetRadius(player->GetRadius() + 5);
+	
+	float newRadius = player->GetRadius() + 5;
+	player->SetRadius(newRadius);
+	player->SetOrigin(newRadius, newRadius);
+	player->SetPosition(sf::Vector2f(m_window.getSize().x / 2, m_window.getSize().y - 50));
 }
 
 void Game::EventHandler()
@@ -139,16 +227,28 @@ void Game::EventHandler()
 			if (event.key.code == sf::Keyboard::Escape)
 				m_window.close();
 			else if ((event.key.code == sf::Keyboard::Space) && (isPause))
+			{
 				isPause = false;
+				startText.setCharacterSize(0);
+				startText.setFillColor(sf::Color::Black);
+			}
+			else if ((event.key.code == sf::Keyboard::R) && (isPause))
+			{
+				isPause = false;
+				startText.setCharacterSize(0);
+				startText.setFillColor(sf::Color::Black);
+			}
 			break;
 		}
 
 	}
 }
 
+
+
 void Game::Update()
 {
-	
+
 	EventHandler();
 
 	if (isPause)
@@ -159,30 +259,13 @@ void Game::Update()
 
 	player->Move(SPEED_PLAYER);
 	
-	
-	//collision
-	for (auto& e : obstacles)
-	{
-		if(e->getBounds().intersects(player->getBounds()))
-		{
-			Restart();
-		}
-	}
-	for (int i=0 ; i < collectibles.size(); i++)
-	{
-		if (collectibles[i]->getBounds().intersects(player->getBounds()))
-		{
-			collectibles.erase(collectibles.begin() + i);
-			player->AddPoints(1);
-			std::cout << "Score :" << player->GetScore() << std::endl;
-		}
-	}
 }
 
 void Game::Render()
 {
 	m_window.clear();
-
+	m_window.draw(startText);
+	m_window.draw(scoreText);
 	for (auto& c : collectibles)
 	{
 		c->Draw(m_window);

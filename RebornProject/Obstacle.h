@@ -4,14 +4,16 @@
 class Obstacle 
 {
 public:
-	Obstacle(float positionX, float positionY);
+	Obstacle();
 	~Obstacle();
 
 	const sf::FloatRect getBounds() const;
+	sf::Vector2f getSize() const;
+	void SetPosition(float x, float y);
+	sf::Vector2f GetPosition();
 	void Draw(sf::RenderTarget& target);
 	void Move(float speed);
-	bool IsCollidingPlayer(Player *player);
-
+	
 private:
 	sf::RectangleShape m_rect;
 	

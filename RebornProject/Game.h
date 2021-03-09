@@ -27,12 +27,20 @@ private:
 	std::vector<Obstacle*> obstacles;
 	std::vector<Collectible*> collectibles;
 
+	sf::Font fontStart;
+	sf::Font fontScore;
+	sf::Font fontGameOver;
+	sf::Text scoreText;
+	sf::Text startText;
+	sf::Text gameOverText;
+
 	void EventHandler();
 	void UpdateObstacles();
 	void UpdateCollectibles();
 	void SpawnObstacles();
 	void SpawnCollectibles();
 	void Restart();
+	void CheckCollision();
 
 };
 
