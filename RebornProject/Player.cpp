@@ -2,13 +2,15 @@
 #include <Player.h>
 
 static const float PLAYER_START_RADIUS{ 20.0f };
+static const float SPEED_PLAYER{ 500.0f };
 
 Player::Player()
 {
-	m_cercle.setRadius(PLAYER_START_RADIUS);
-	m_cercle.setOrigin(PLAYER_START_RADIUS, PLAYER_START_RADIUS);
-	m_cercle.setFillColor(sf::Color::Cyan);
-	m_cercle.setPosition(0,0);
+	m_cercle = new sf::CircleShape(PLAYER_START_RADIUS);
+	m_shape = m_cercle;
+	m_cercle->setOrigin(PLAYER_START_RADIUS, PLAYER_START_RADIUS);
+	m_cercle->setFillColor(sf::Color::Cyan);
+	m_cercle->setPosition(0,0);
 
 	score = 0;
 }
@@ -17,22 +19,20 @@ Player::~Player()
 {
 }
 
-void Player::Move(float speed)
+void Player::Move(float time)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		m_cercle.move(-speed, 0);
+		m_cercle->move(-SPEED_PLAYER*time, 0);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		m_cercle.move(speed, 0);
+		m_cercle->move(SPEED_PLAYER*time, 0);
 	
 	}
 
 }
-
-void Player::Draw(sf::RenderTarget& target)
-{
+/*
 	if (m_cercle.getGlobalBounds().left <= 0.f)
 	{
 		m_cercle.setPosition(m_cercle.getRadius(), m_cercle.getPosition().y);
@@ -43,37 +43,23 @@ void Player::Draw(sf::RenderTarget& target)
 		m_cercle.setPosition(target.getSize().x -
 			m_cercle.getRadius(), m_cercle.getPosition().y);
 	}
-
-	target.draw(m_cercle);
-
-}
-
-const sf::FloatRect Player::getBounds() const
-{
-	return m_cercle.getGlobalBounds();
-}
-
-float Player::GetRadius()
-{
-	return m_cercle.getRadius();
-}
-
+	*/
 void Player::SetRadius(float newRad)
 {
-	m_cercle.setRadius(newRad);
+	m_cercle->setRadius(newRad);
 }
 
 void Player::SetOrigin(float x, float y)
 {
-	m_cercle.setOrigin(x, y);
+	m_cercle->setOrigin(x, y);
 }
 
-void Player::SetPosition(sf::Vector2f pos)
+float Player::GetRadius() const
 {
-	m_cercle.setPosition(pos);
+	return m_cercle->getRadius();
 }
 
-int Player::GetScore()
+int Player::GetScore() const
 {
 	return score;
 }

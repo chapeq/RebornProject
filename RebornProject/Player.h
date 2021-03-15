@@ -1,25 +1,24 @@
 #pragma once
+#include "Item.h"
 
-class Player 
+class Player : public Item
 {
 public:
 	Player();
 	~Player();
 
-	void Move(float speed);
-	const sf::FloatRect getBounds() const;
-	void Draw(sf::RenderTarget& target);
-	void SetPosition(sf::Vector2f pos);
+	virtual void Move(float time) override ;
 
-	void SetRadius(float newRad);
-	float GetRadius();
-	void SetOrigin(float x, float y);
 	void AddPoints(int points);
-	int GetScore();
+	
+	void SetRadius(float newRad);
+	void SetOrigin(float x, float y);
 
+	float GetRadius()const;
+	int GetScore() const;
 
 private:
-	sf::CircleShape m_cercle;
+	sf::CircleShape* m_cercle;
 	int score;
 	
 };

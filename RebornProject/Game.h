@@ -1,31 +1,30 @@
 #pragma once
-#include <Player.h>
-#include <Obstacle.h>
-#include <Collectible.h>
+#include "GameEngine.h"
+#include "Player.h"
+#include "Obstacle.h"
+#include "Collectible.h"
 #include <vector>
 
-class Game
+class Game : public GameEngine
 {
 public:
 	Game();
 	virtual ~Game();
 
-	const bool IsRunning() const;
-	void Update();
-	void Render();
+	void Update(float deltaTime) override;
+	void Render(sf::RenderTarget& target) override;
+	void RenderDebugMenu(sf::RenderTarget& target) override;
 
 private:
-	sf::RenderWindow m_window;
-
 	float obstacleSpawnTimer;
 	float obstacleSpawnTimerMax;
 	float collectibleSpawnTimer;
 	float collectibleSpawnTimerMax;
-	bool isPause;
+	float levelUpTimer;
 
-	Player *player;
-	std::vector<Obstacle*> obstacles;
-	std::vector<Collectible*> collectibles;
+	Player player;
+	std::vector<Obstacle> obstacles;
+	std::vector<Collectible> collectibles;
 
 	sf::Font fontStart;
 	sf::Font fontScore;
@@ -34,13 +33,11 @@ private:
 	sf::Text startText;
 	sf::Text gameOverText;
 
-	void EventHandler();
-	void UpdateObstacles();
-	void UpdateCollectibles();
+	void UpdateObstacles(float time);
+	void UpdateCollectibles(float time);
 	void SpawnObstacles();
 	void SpawnCollectibles();
 	void Restart();
-	void CheckCollision();
 
 };
 
