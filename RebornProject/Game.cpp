@@ -1,43 +1,17 @@
 #include "stdafx.h"
 #include "Game.h"
+#include "Item.h"
 #include <iostream>
 #include <vector>
 
-static const float OBSTACLE_TIMER{ 1.0f };
-static const float COLLECTIBLE_TIMER{ 1.0f };
+
 static const int NBR_MAX_OBSTACLE{ 3 };
 static const int NBR_MAX_COLLECTIBLE{ 6 };
-static const float INCREASE_DIFFICULTY_TIME {10.f};
-
+static const float PLAYER_MAX_SIZE{ 80.0f };
 
 Game::Game() : GameEngine{}
 {
-	
-	obstacleSpawnTimerMax = OBSTACLE_TIMER;
-	obstacleSpawnTimer = obstacleSpawnTimerMax;
-	collectibleSpawnTimerMax = COLLECTIBLE_TIMER;
-	collectibleSpawnTimer = collectibleSpawnTimerMax;
-	levelUpTimer = 0.f;
-
 	player.SetPosition(sf::Vector2f(windowSize.x / 2, windowSize.y - 50));
-
-	if (!fontStart.loadFromFile("Assets/retro.ttf"))
-		std::cout << "ERROR Failed to load font" << std::endl;
-
-	startText.setFont(this->fontStart);
-	startText.setCharacterSize(80);
-	startText.setFillColor(sf::Color::White);
-	startText.setPosition(100, 200);
-	startText.setString("Press Space To Start !");
-
-	if (!fontScore.loadFromFile("Assets/rainyhearts.ttf"))
-		std::cout << "ERROR Failed to load font" << std::endl;
-
-	scoreText.setFont(this->fontScore);
-	scoreText.setCharacterSize(50);
-	scoreText.setFillColor(sf::Color::White);
-	scoreText.setPosition(0, 0);
-	scoreText.setString("Score : 0");
 }
 
 Game::~Game()
@@ -46,13 +20,11 @@ Game::~Game()
 }
 
 
-
-
 void Game::SpawnObstacles()
 {
 	Obstacle obst ;
 	float x = static_cast<float>(rand() % static_cast<int>(windowSize.x - obst.getSize().x));
-	float y = -10.0f;
+	float y = -10.0f; //offset
 	obst.SetPosition(sf::Vector2f(x, y));
 	obstacles.push_back(obst);
 }
@@ -62,10 +34,10 @@ void Game::SpawnCollectibles()
 	int  randNbrCol = rand() % NBR_MAX_COLLECTIBLE + 2;
 	Collectible firstcol;
 	float x = static_cast<float>(rand() % static_cast<int>(windowSize.x - (firstcol.GetRadius()*2)));
-	float y = -10.0f;
+	float y = -10.0f; //offset
 	firstcol.SetPosition(sf::Vector2f(x, y));
 	collectibles.push_back(firstcol);
-
+	//Spawn next collectibles with 10.f offset between each other
 	for (int i = 1; i < randNbrCol+1 ; i++)
 	{
 		Collectible nextcol;
@@ -75,61 +47,51 @@ void Game::SpawnCollectibles()
 			
 }
 
-void Game::UpdateObstacles(float time)
+void Game::UpdateObstacles()
 {
 	//Spawn
-	int randNbrObst = rand() % NBR_MAX_OBSTACLE + 1;
-	obstacleSpawnTimer += time;
+	int randNbrObst = rand() % NBR_MAX_OBSTACLE + 1;	
 
-	if (obstacleSpawnTimer >= obstacleSpawnTimerMax)
+	if (timer->triggerObstacleSpawn())
 	{
 		for (int i = 0; i < randNbrObst; i++)
 		{
 			SpawnObstacles();
 		}
-		obstacleSpawnTimer = 0.f;
 	}
 	
-
 	//Update
-	int cpt = 0;
-	for (auto& e : obstacles)
+	for (int i = 0; i < obstacles.size(); i++)
 	{
 		//Move Down
-		e.Move(time);
+		obstacles[i].Move(timer->getDeltaTime());
 
 		// check player collision
-		if (e.getBounds().intersects(player.getBounds()))
+		if (obstacles[i].getBounds().intersects(player.getBounds()))
 		{
-			Restart();
+			LoseAndReborn();
 		}
-
 		//Delete if out of bounds
-		if (e.GetPosition().y > windowSize.y)
+		else if (obstacles[i].GetPosition().y > windowSize.y)
 		{
-			//delete obstacles.at(cpt);
-			obstacles.erase(obstacles.begin() + cpt);
+			obstacles.erase(obstacles.begin() + i);
 		}
-
-		cpt++;
 	}
 }
 
 
-void Game::UpdateCollectibles(float time)
+void Game::UpdateCollectibles()
 {
-	collectibleSpawnTimer += time;
-	//Spawn
-	if (collectibleSpawnTimer >= collectibleSpawnTimerMax)
+	//Spaw
+
+	if (timer->triggerCollectibleSpawn())
 	{
 		SpawnCollectibles();
-		collectibleSpawnTimer = 0.f;
 	}
 	
-	//Update
+	//Delete if overlap by obstacle
 	for (auto& e : obstacles)
 	{
-		//Delete if overlap by obstacle
 		for (int i = 0; i < collectibles.size(); i++)
 		{
 			if (collectibles[i].getBounds().intersects(e.getBounds()))
@@ -139,11 +101,11 @@ void Game::UpdateCollectibles(float time)
 		}
 	}
 	
+	//Update
 	for (int i = 0; i < collectibles.size(); i++)
 	{
-
 		//Move Down
-		collectibles[i].Move(time);
+		collectibles[i].Move(timer->getDeltaTime());
 
 		//Check collision with player
 		if (collectibles[i].getBounds().intersects(player.getBounds()))
@@ -151,14 +113,10 @@ void Game::UpdateCollectibles(float time)
 			collectibles.erase(collectibles.begin() + i);
 			player.AddPoints(1);
 			std::string score = "Score : " + std::to_string(player.GetScore());
-			scoreText.setString(score);
+			uiManage.afficheScore(score);
 		}
-	}
-
-	for (int i = 0; i < collectibles.size(); i++)
-	{
 		//Delete if out of bounds
-		if (collectibles[i].GetPosition().y > windowSize.y)
+		else if (collectibles[i].GetPosition().y > windowSize.y)
 		{
 			collectibles.erase(collectibles.begin() + i);
 		}
@@ -166,40 +124,51 @@ void Game::UpdateCollectibles(float time)
 	}
 }
 
-void Game::Restart()
+bool Game::CheckIfGameOver()
 {
-	startText.setString("You Died ! Press R To Reborn !");
-	startText.setPosition(70, 200);
-	startText.setCharacterSize(70);
-	startText.setFillColor(sf::Color::White);
-	mState = Lose;
+	if (timer->IsGameOverTime() && player.GetRadius() >= PLAYER_MAX_SIZE)
+	{
+		uiManage.afficheGameOverText();
+		mState = GameState::End;
+		obstacles.clear();
+		collectibles.clear();
+		return true;
+	}
+	else
+		return false;
+}
+void Game::LoseAndReborn()
+{
+	if (!CheckIfGameOver())
+	{
+		uiManage.afficheRebornText();
+		mState = GameState::Lose;
 
+		obstacles.clear();
+		collectibles.clear();
 
-	obstacles.clear();
-	collectibles.clear();
-	
-	float newRadius = player.GetRadius() + 5;
-	player.SetRadius(newRadius);
-	player.SetOrigin(newRadius, newRadius);
-	player.SetPosition(sf::Vector2f(windowSize.x / 2, windowSize.y - 50));
+		float newRadius = player.GetRadius() + 5;
+		player.SetRadius(newRadius);
+		player.SetOrigin(newRadius, newRadius);
+		player.SetPosition(sf::Vector2f(windowSize.x / 2, windowSize.y - 50));
+
+	}
 }
 
 
-void Game::Update(float deltaTime)
+void Game::Update()
 {
-	if (mState!= Playing)
+	if (mState!= GameState::Playing)
 		return;
 
-	UpdateObstacles(deltaTime);
-	UpdateCollectibles(deltaTime);
+	UpdateObstacles();
+	UpdateCollectibles();
 
-	player.Move(deltaTime);
+	player.Move(timer->getDeltaTime());
 
-	levelUpTimer += deltaTime;
-	if (levelUpTimer >= INCREASE_DIFFICULTY_TIME)
+	if (timer->triggerLevelUp())
 	{
-		//SPEED_ITEMS += 50.f;
-		levelUpTimer = 0.f;
+		Item::speed += 50.f;
 	}
 	
 }
@@ -207,8 +176,7 @@ void Game::Update(float deltaTime)
 void Game::Render(sf::RenderTarget& target)
 {
 	target.clear();
-	target.draw(startText);
-	target.draw(scoreText);
+	uiManage.Draw(target);
 	for (auto& c : collectibles)
 	{
 		c.Draw(target);
@@ -222,16 +190,25 @@ void Game::Render(sf::RenderTarget& target)
 
 void Game::RenderDebugMenu(sf::RenderTarget& target)
 {
-	ImGui::Begin("Debug Menu");
-	ImGui::Text("Press F1 to close this debug menu");
+	ImGuiIO& io = ImGui::GetIO();
+	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	ImGui::Begin("Parameter window");
 	ImGui::NewLine();
 
-	if (ImGui::CollapsingHeader("Game status"))
+	if (ImGui::CollapsingHeader("Obstacles and Collectibles : "))
 	{
-	
-		{
-			ImGui::TextColored(ImVec4(0.f, 255.0f, 0.f, 1.f), "GAME IN PROGRESS");
-		}
+		float f0 = Item::speed;
+		float f1 = timer->collectibleSpawnTimerMax;
+		float f2 = timer->obstacleSpawnTimerMax;
+		ImGui::InputFloat("Speed", &f0, 1.0f, 1.0f, "%.3f");
+		ImGui::InputFloat("CollectibleSpawnTimer", &f1, 1.0f, 1.0f, "%.3f");
+		ImGui::InputFloat("ObstacleSpawnTimer", &f2, 1.0f, 1.0f, "%.3f");
+	}
+
+	if (ImGui::CollapsingHeader("Player : "))
+	{
+		float f0 = player.speedPlayer;
+		ImGui::InputFloat("Speed", &f0, 1.0f, 1.0f, "%.3f");
 	}
 
 	ImGui::End();

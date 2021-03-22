@@ -13,6 +13,7 @@ Collectible::Collectible()
 
 Collectible::~Collectible()
 {
+	//pb delete m_shape
 }
 
 float Collectible::GetRadius() const

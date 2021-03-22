@@ -13,21 +13,23 @@ Player::Player()
 	m_cercle->setPosition(0,0);
 
 	score = 0;
+	speedPlayer = SPEED_PLAYER;
 }
 
 Player::~Player()
 {
+	//pb delete m_shape
 }
 
 void Player::Move(float time)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		m_cercle->move(-SPEED_PLAYER*time, 0);
+		m_cercle->move(-speedPlayer*time, 0);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		m_cercle->move(SPEED_PLAYER*time, 0);
+		m_cercle->move(speedPlayer*time, 0);
 	
 	}
 

@@ -1,5 +1,8 @@
 #pragma once
-enum GameState
+#include "UIManager.h"
+#include "TimeManager.h"
+
+enum class GameState
 {
     Start,
     Playing,
@@ -17,8 +20,10 @@ public :
 
 protected:
     GameState mState; 
+    UIManager uiManage;
+    TimeManager* timer;
     sf::Vector2f windowSize;
-    virtual void Update(float deltaTime) = 0;
+    virtual void Update() = 0;
     virtual void Render(sf::RenderTarget& target) = 0;
     virtual void RenderDebugMenu(sf::RenderTarget& target) = 0;
 

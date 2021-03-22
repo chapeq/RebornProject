@@ -7,6 +7,7 @@ public:
 	Player();
 	~Player();
 
+	float speedPlayer;
 	virtual void Move(float time) override ;
 
 	void AddPoints(int points);

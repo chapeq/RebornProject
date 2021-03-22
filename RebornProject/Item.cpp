@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "Item.h"
 
-static const float SPEED_ITEMS{ 300.0f };
+static float SPEED_ITEMS{ 300.0f }; 
+float Item::speed = SPEED_ITEMS;
 
 Item::Item()
 {
 	//m_shape = nullptr;
+
 }
 
 Item::~Item()
@@ -24,7 +26,7 @@ const sf::FloatRect Item::getBounds() const
 
 void Item::Move(float time)
 {
-	m_shape->move(0.f, SPEED_ITEMS * time);
+	m_shape->move(0.f, speed * time);
 }
 
 void Item::SetPosition(sf::Vector2f pos)

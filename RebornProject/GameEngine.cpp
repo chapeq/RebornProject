@@ -12,9 +12,13 @@ GameEngine::GameEngine()
     m_window.setFramerateLimit(MAX_FRAMERATE);
 
     windowSize = WINDOW_SIZE;
-    mState = Start;
+    mState = GameState::Start;
 
     ImGui::SFML::Init(m_window);
+
+    float deltaTime{ 1.0f / MAX_FRAMERATE };
+    sf::Clock clock;
+    timer = new TimeManager(clock, deltaTime);
 }
 
 GameEngine::~GameEngine()
@@ -24,14 +28,12 @@ GameEngine::~GameEngine()
 
 void GameEngine::RunGameLoop()
 {
-        float deltaTime{ 1.0f / MAX_FRAMERATE };
-        sf::Clock clock;
 
         bool toggleImGui = true;
 
         while (m_window.isOpen())
         {
-            clock.restart();
+            timer->restartClock();
 
             sf::Event event;
             while (m_window.pollEvent(event))
@@ -44,17 +46,15 @@ void GameEngine::RunGameLoop()
                 case sf::Event::KeyPressed:
                     if (event.key.code == sf::Keyboard::Escape)
                         m_window.close();
-                    else if ((event.key.code == sf::Keyboard::Space) && (mState == Start))
+                    else if ((event.key.code == sf::Keyboard::Space) && (mState == GameState::Start))
                     {
-                        mState = Playing;
-                        //startText.setCharacterSize(0);
-                        //startText.setFillColor(sf::Color::Black);
+                        mState = GameState::Playing;
+                        uiManage.hideStartText();
                     }
-                    else if ((event.key.code == sf::Keyboard::R) && (mState == Lose))
+                    else if ((event.key.code == sf::Keyboard::R) && (mState == GameState::Lose))
                     {
-                        mState = Playing;
-                        // startText.setCharacterSize(0);
-                         //startText.setFillColor(sf::Color::Black);
+                        mState = GameState::Playing;
+                        uiManage.hideRebornText();
                     }
                     break;
                 case sf::Event::Resized:
@@ -66,9 +66,9 @@ void GameEngine::RunGameLoop()
                 ImGui::SFML::ProcessEvent(event);
             }
 
-            ImGui::SFML::Update(m_window, clock.restart());
+            ImGui::SFML::Update(m_window, timer->restartClock());
 
-            Update(deltaTime);
+            Update();
             Render(m_window);
             RenderDebugMenu(m_window);
 
@@ -80,6 +80,6 @@ void GameEngine::RunGameLoop()
 
             m_window.display();
 
-            deltaTime = clock.getElapsedTime().asSeconds();
+            timer->setDeltaTime();
         }
     }

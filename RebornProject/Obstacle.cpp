@@ -13,6 +13,7 @@ Obstacle::Obstacle()
 
 Obstacle::~Obstacle()
 {
+	//pb delete m_shape
 }
 
 sf::Vector2f Obstacle::getSize() const

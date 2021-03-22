@@ -26,6 +26,8 @@
     <ClCompile Include="Collectible.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="GameEngine.cpp" />
+    <ClCompile Include="UIManager.cpp" />
+    <ClCompile Include="TimeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -44,6 +46,8 @@
     <ClInclude Include="Collectible.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="GameEngine.h" />
+    <ClInclude Include="UIManager.h" />
+    <ClInclude Include="TimeManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">
