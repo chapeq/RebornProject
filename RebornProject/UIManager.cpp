@@ -49,7 +49,7 @@ void UIManager::afficheGameOverText()
 
 	gameOverText.setFont(fontGameOver);
 	gameOverText.setString("GAME OVER !");
-	gameOverText.setPosition(120, 80);
+	gameOverText.setPosition(120, 60);
 	gameOverText.setCharacterSize(230);
 	gameOverText.setFillColor(sf::Color::White);
 

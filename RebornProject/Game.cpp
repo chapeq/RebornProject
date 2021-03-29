@@ -1,17 +1,17 @@
 #include "stdafx.h"
 #include "Game.h"
-#include "Item.h"
 #include <iostream>
 #include <vector>
 
 
-static const int NBR_MAX_OBSTACLE{ 3 };
-static const int NBR_MAX_COLLECTIBLE{ 6 };
+static  int NBR_MAX_OBSTACLE{ 3 };
+static  int NBR_MAX_COLLECTIBLE{ 6 };
 static const float PLAYER_MAX_SIZE{ 80.0f };
 
 Game::Game() : GameEngine{}
 {
 	player.SetPosition(sf::Vector2f(windowSize.x / 2, windowSize.y - 50));
+	initParameters();
 }
 
 Game::~Game()
@@ -19,6 +19,17 @@ Game::~Game()
 
 }
 
+void Game::initParameters()
+{
+	init.collectibleSpeed = Collectible::speed;
+	init.obstacleSpeed = Obstacle::speed;
+	init.collectibleSpawnTime = timer->collectibleSpawnTimerMax;
+	init.obstacleSpawnTime = timer->obstacleSpawnTimerMax;
+	init.nbrMaxObstacle = NBR_MAX_OBSTACLE;
+	init.nbrMaxCollectible = NBR_MAX_COLLECTIBLE;
+	init.playerSpeed = player.GetSpeed();
+	init.playerRadius = player.GetRadius();
+}
 
 void Game::SpawnObstacles()
 {
@@ -31,7 +42,7 @@ void Game::SpawnObstacles()
 
 void Game::SpawnCollectibles()
 {
-	int  randNbrCol = rand() % NBR_MAX_COLLECTIBLE + 2;
+	int  randNbrCol = rand() % NBR_MAX_COLLECTIBLE + 1;
 	Collectible firstcol;
 	float x = static_cast<float>(rand() % static_cast<int>(windowSize.x - (firstcol.GetRadius()*2)));
 	float y = -10.0f; //offset
@@ -110,6 +121,7 @@ void Game::UpdateCollectibles()
 		//Check collision with player
 		if (collectibles[i].getBounds().intersects(player.getBounds()))
 		{
+			audio.PlayCollect();
 			collectibles.erase(collectibles.begin() + i);
 			player.AddPoints(1);
 			std::string score = "Score : " + std::to_string(player.GetScore());
@@ -128,6 +140,7 @@ bool Game::CheckIfGameOver()
 {
 	if (timer->IsGameOverTime() && player.GetRadius() >= PLAYER_MAX_SIZE)
 	{
+		audio.PlayGameOver();
 		uiManage.afficheGameOverText();
 		mState = GameState::End;
 		obstacles.clear();
@@ -141,6 +154,7 @@ void Game::LoseAndReborn()
 {
 	if (!CheckIfGameOver())
 	{
+		audio.PlayHit();
 		uiManage.afficheRebornText();
 		mState = GameState::Lose;
 
@@ -165,10 +179,12 @@ void Game::Update()
 	UpdateCollectibles();
 
 	player.Move(timer->getDeltaTime());
+	player.CheckWindowBounds(windowSize);
 
 	if (timer->triggerLevelUp())
 	{
-		Item::speed += 50.f;
+		Collectible::speed += 50.f;
+		Obstacle::speed += 50.f;
 	}
 	
 }
@@ -188,28 +204,63 @@ void Game::Render(sf::RenderTarget& target)
 	player.Draw(target);
 }
 
+
+
 void Game::RenderDebugMenu(sf::RenderTarget& target)
 {
-	ImGuiIO& io = ImGui::GetIO();
-	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 	ImGui::Begin("Parameter window");
 	ImGui::NewLine();
 
+	static float collectibleSpeed = Collectible::speed;
+	static float obstacleSpeed = Obstacle::speed;
+	static float collectibleSpawnTime = timer->collectibleSpawnTimerMax;
+	static float obstacleSpawnTime = timer->obstacleSpawnTimerMax;
+	static int nbrMaxObstacle = NBR_MAX_OBSTACLE;
+	static int nbrMaxCollectible = NBR_MAX_COLLECTIBLE;
+	static float playerSpeed = player.GetSpeed();
+	static float  playerRadius = player.GetRadius();
+	
 	if (ImGui::CollapsingHeader("Obstacles and Collectibles : "))
 	{
-		float f0 = Item::speed;
-		float f1 = timer->collectibleSpawnTimerMax;
-		float f2 = timer->obstacleSpawnTimerMax;
-		ImGui::InputFloat("Speed", &f0, 1.0f, 1.0f, "%.3f");
-		ImGui::InputFloat("CollectibleSpawnTimer", &f1, 1.0f, 1.0f, "%.3f");
-		ImGui::InputFloat("ObstacleSpawnTimer", &f2, 1.0f, 1.0f, "%.3f");
+		ImGui::SliderFloat("CollectibleSpeed", &collectibleSpeed, 100.0f, 900.0f, "%.1f");
+		ImGui::SliderFloat("ObstacleSpeed", &obstacleSpeed, 100.0f, 900.0f, "%.1f");
+		ImGui::SliderFloat("CollectibleSpawnTime", &collectibleSpawnTime, 0.2f, 5.0f, "%.2f");
+		ImGui::SliderFloat("ObstacleSpawnTime", &obstacleSpawnTime, 0.2f, 5.0f, "%.2f");
+		ImGui::SliderInt("NbrMaxCollectible", &nbrMaxCollectible, 1 , 15);
+		ImGui::SliderInt("NbrMaxObstacle", &nbrMaxObstacle, 1, 10);
 	}
 
 	if (ImGui::CollapsingHeader("Player : "))
 	{
-		float f0 = player.speedPlayer;
-		ImGui::InputFloat("Speed", &f0, 1.0f, 1.0f, "%.3f");
+		ImGui::SliderFloat("Speed", &playerSpeed, 100.0f, 900.0f, "%.1f");
+		ImGui::SliderFloat("Size", &playerRadius, 10.0f, 200.0f, "%.1f");
+	}
+	ImGui::NewLine();
+
+	if (ImGui::Button("Apply"))
+	{
+		Collectible::speed = collectibleSpeed ;
+		Obstacle::speed = obstacleSpeed;
+		timer->collectibleSpawnTimerMax = collectibleSpawnTime;
+		timer->obstacleSpawnTimerMax = obstacleSpawnTime;
+		NBR_MAX_OBSTACLE = nbrMaxObstacle;
+		NBR_MAX_COLLECTIBLE = nbrMaxCollectible;
+		player.SetSpeed(playerSpeed);
+		player.SetRadius(playerRadius);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Reset"))
+	{
+		 collectibleSpeed = init.collectibleSpeed;
+		  obstacleSpeed = init.obstacleSpeed;
+		 collectibleSpawnTime = init.collectibleSpawnTime;
+		 obstacleSpawnTime = init.obstacleSpawnTime;
+		nbrMaxObstacle = init.nbrMaxObstacle;
+		 nbrMaxCollectible = init.nbrMaxCollectible;
+		 playerSpeed = init.playerSpeed;
+		 playerRadius = init.playerRadius;
 	}
 
 	ImGui::End();
 }
+

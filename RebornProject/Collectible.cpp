@@ -2,6 +2,8 @@
 #include "Collectible.h"
 
 static const float COLLECTIBLE_RADIUS{ 20.0f };
+static const float COLLECTIBLE_SPEED{ 300.0f };
+float Collectible::speed = COLLECTIBLE_SPEED;
 
 Collectible::Collectible()
 {
@@ -21,4 +23,9 @@ float Collectible::GetRadius() const
 	return m_triangle->getRadius();
 }
 
+
+void Collectible::Move(float time)
+{
+	m_triangle->move(0.f, speed * time);
+}
 

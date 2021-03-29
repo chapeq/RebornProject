@@ -2,6 +2,8 @@
 #include "Obstacle.h"
 
 static const sf::Vector2f OBSTACLE_SIZE{ 70.f,70.f };
+static const float OBSTACLE_SPEED{ 300.0f };
+float Obstacle::speed = OBSTACLE_SPEED;
 
 Obstacle::Obstacle()
 {
@@ -19,4 +21,10 @@ Obstacle::~Obstacle()
 sf::Vector2f Obstacle::getSize() const
 {
 	return m_rect->getSize();
+}
+
+
+void Obstacle::Move(float time)
+{
+	m_rect->move(0.f, speed * time);
 }

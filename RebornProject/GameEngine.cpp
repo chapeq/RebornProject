@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GameEngine.h"
+#include <iostream>
 
 
 static const float MAX_FRAMERATE{ 60.0f };
@@ -10,7 +11,13 @@ GameEngine::GameEngine()
 {
     m_window.create(sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y), APP_NAME, sf::Style::Titlebar | sf::Style::Close);
     m_window.setFramerateLimit(MAX_FRAMERATE);
+    
+    auto image = sf::Image{};
+    if (!image.loadFromFile("Assets/rebornlogo.png"))
+        std::cout << "ERROR Failed to load font" << std::endl;
 
+    m_window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
+   
     windowSize = WINDOW_SIZE;
     mState = GameState::Start;
 
@@ -30,6 +37,7 @@ void GameEngine::RunGameLoop()
 {
 
         bool toggleImGui = true;
+        audio.PlayMusic();
 
         while (m_window.isOpen())
         {

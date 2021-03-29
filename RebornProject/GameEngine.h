@@ -1,6 +1,7 @@
 #pragma once
 #include "UIManager.h"
 #include "TimeManager.h"
+#include "AudioManager.h"
 
 enum class GameState
 {
@@ -21,6 +22,7 @@ public :
 protected:
     GameState mState; 
     UIManager uiManage;
+    AudioManager audio;
     TimeManager* timer;
     sf::Vector2f windowSize;
     virtual void Update() = 0;

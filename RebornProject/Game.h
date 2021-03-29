@@ -6,6 +6,17 @@
 #include "UIManager.h"
 #include <vector>
 
+struct Parameters {
+	 float collectibleSpeed;
+	 float obstacleSpeed;
+	 float collectibleSpawnTime;
+	 float obstacleSpawnTime;
+	 int nbrMaxObstacle;
+	 int nbrMaxCollectible;
+	 float playerSpeed;
+	 float playerRadius;
+};
+
 class Game : public GameEngine
 {
 public:
@@ -18,11 +29,12 @@ public:
 
 private:
 	
-
 	Player player;
+	Parameters init;
 	std::vector<Obstacle> obstacles;
 	std::vector<Collectible> collectibles;
 
+	void initParameters();
 	void UpdateObstacles();
 	void UpdateCollectibles();
 	void SpawnObstacles();

@@ -13,7 +13,7 @@ Player::Player()
 	m_cercle->setPosition(0,0);
 
 	score = 0;
-	speedPlayer = SPEED_PLAYER;
+	speed = SPEED_PLAYER;
 }
 
 Player::~Player()
@@ -25,27 +25,29 @@ void Player::Move(float time)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		m_cercle->move(-speedPlayer*time, 0);
+		m_cercle->move(-speed*time, 0);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		m_cercle->move(speedPlayer*time, 0);
+		m_cercle->move(speed*time, 0);
 	
 	}
 
 }
-/*
-	if (m_cercle.getGlobalBounds().left <= 0.f)
+
+void Player::CheckWindowBounds(sf::Vector2f windowSize)
+{
+	if (m_cercle->getGlobalBounds().left <= 0.f)
 	{
-		m_cercle.setPosition(m_cercle.getRadius(), m_cercle.getPosition().y);
+		m_cercle->setPosition(m_cercle->getRadius(), m_cercle->getPosition().y);
 	}
-	
-	if (m_cercle.getGlobalBounds().left + m_cercle.getGlobalBounds().width >= target.getSize().x)
+
+	if (m_cercle->getGlobalBounds().left + m_cercle->getGlobalBounds().width >= windowSize.x)
 	{
-		m_cercle.setPosition(target.getSize().x -
-			m_cercle.getRadius(), m_cercle.getPosition().y);
+		m_cercle->setPosition(windowSize.x - m_cercle->getRadius(), m_cercle->getPosition().y);
 	}
-	*/
+}
+
 void Player::SetRadius(float newRad)
 {
 	m_cercle->setRadius(newRad);
@@ -55,6 +57,18 @@ void Player::SetOrigin(float x, float y)
 {
 	m_cercle->setOrigin(x, y);
 }
+
+void Player::SetSpeed(float newSpeed)
+{
+	speed = newSpeed;
+}
+
+float Player::GetSpeed() const
+{
+	return speed;
+}
+
+
 
 float Player::GetRadius() const
 {
