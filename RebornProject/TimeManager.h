@@ -5,25 +5,27 @@ public:
 	TimeManager(sf::Clock clock, float deltaTime);
 	~TimeManager();
 
-	 float collectibleSpawnTimerMax;
-	 float obstacleSpawnTimerMax;
+	sf::Time RestartClock();
 
-	sf::Time restartClock();
-	void setDeltaTime();
-	float getDeltaTime();
+	void SetDeltaTime();
+	void SetCollectibleSpawnTime(float newTime);
+	void SetObstacleSpawnTime(float newTime);
+	float GetDeltaTime();
+	float GetCollectibleSpawnTime() const;
+	float GetObstacleSpawnTime() const;
 
-	bool triggerObstacleSpawn();
-	bool triggerCollectibleSpawn();
-	bool triggerLevelUp();
-	bool IsGameOverTime();
+	bool TriggerObstacleSpawn();
+	bool TriggerCollectibleSpawn();
+	bool TriggerLevelUp();
 
 private:
-	sf::Clock clock;
-	float deltaTime;
+	sf::Clock m_clock;
+	float m_deltaTime;
 
-	float obstacleSpawnTimer;
-	float collectibleSpawnTimer;
-	float levelUpTimer;
-	float GameOverTimer;
+	float m_collectibleSpawnTime;
+	float m_obstacleSpawnTime;
+	float m_collectibleTimer;
+	float m_obstacleTimer;;
+	float m_levelUpTimer;
 };
 

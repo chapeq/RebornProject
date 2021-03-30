@@ -16,5 +16,6 @@ private :
 	sf::SoundBuffer collect;
 	sf::SoundBuffer smallgameover;
 	sf::SoundBuffer GameOver;
+	sf::Sound sound1, sound2, sound3;
 };
 

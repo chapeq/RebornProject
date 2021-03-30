@@ -210,6 +210,7 @@ xcopy /y /d  "$(SolutionDir)external\SFML-2.5.1\bin\*.dll" "$(OutDir)"</Command>
     </ClCompile>
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Collectible.cpp" />
+    <ClCompile Include="Config.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="main.cpp" />
@@ -225,6 +226,7 @@ xcopy /y /d  "$(SolutionDir)external\SFML-2.5.1\bin\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="..\external\imgui-sfml-master\imgui-SFML.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Collectible.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="Obstacle.h" />

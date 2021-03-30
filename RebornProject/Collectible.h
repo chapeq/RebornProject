@@ -4,16 +4,17 @@
 class Collectible : public Item
 {
 public:
-	Collectible();
+	Collectible(float speed);
 	~Collectible();
 
-	static float speed;
-
-	float GetRadius() const;	
 	void Move(float time);
+	void SetSpeed(float newSpeed);
+	float GetSpeed() const;
+	float GetRadius() const;	
 
 private:
 	sf::CircleShape* m_triangle;
+	float m_speed;
 	
 
 };

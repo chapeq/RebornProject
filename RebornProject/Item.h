@@ -6,7 +6,7 @@ public:
 	~Item();
 	
 	void Draw(sf::RenderTarget& target);
-	const sf::FloatRect getBounds() const;
+	const sf::FloatRect GetBounds() const;
 
 	void SetPosition(sf::Vector2f pos);
 	sf::Vector2f GetPosition() const;

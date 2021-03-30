@@ -1,64 +1,61 @@
 #include "stdafx.h"
 #include "TimeManager.h"
+#include <iostream>
 
-static const float OBSTACLE_TIMER{ 1.0f };
-static const float COLLECTIBLE_TIMER{ 1.0f };
 static const float INCREASE_DIFFICULTY_TIME{ 10.f };
 static const float GAMEOVER_MIN_TIME{ 1.0f };
 
 TimeManager::TimeManager(sf::Clock clock, float deltaTime)
 {
-	this->clock = clock;
-	this->deltaTime = deltaTime;
+	m_clock = clock;
+	m_deltaTime = deltaTime;
 
-	obstacleSpawnTimerMax = OBSTACLE_TIMER;
-	obstacleSpawnTimer = obstacleSpawnTimerMax;
-	collectibleSpawnTimerMax = COLLECTIBLE_TIMER;
-	collectibleSpawnTimer = collectibleSpawnTimerMax;
-	levelUpTimer = 0.f;
-	GameOverTimer = 0.f;
-
+	 m_collectibleSpawnTime = 0.0f;
+	 m_obstacleSpawnTime = 0.0f;
+	 m_collectibleTimer = 0.0f;
+	 m_obstacleTimer = 0.0f;
+	 m_levelUpTimer = 0.0f;
 }
 
 TimeManager::~TimeManager()
 {
 }
 
-sf::Time TimeManager::restartClock()
+sf::Time TimeManager::RestartClock()
 {
-	return clock.restart();
+	return m_clock.restart();
 }
 
-void TimeManager::setDeltaTime()
+void TimeManager::SetDeltaTime()
 {
-	deltaTime = clock.getElapsedTime().asSeconds();
+	m_deltaTime = m_clock.getElapsedTime().asSeconds();
 }
 
-float TimeManager::getDeltaTime()
+float TimeManager::GetDeltaTime()
 {
-	return deltaTime;
+	return m_deltaTime;
 }
 
-bool TimeManager::triggerObstacleSpawn()
+bool TimeManager::TriggerObstacleSpawn()
 {
-	obstacleSpawnTimer += deltaTime;
+	m_obstacleTimer += m_deltaTime;
 
-	if (obstacleSpawnTimer >= obstacleSpawnTimerMax)
+	if (m_obstacleTimer >= m_obstacleSpawnTime)
 	{
-		obstacleSpawnTimer = 0;
+		m_obstacleTimer = 0;
 		return true;
 	}
 	else
 		return false; 
 }
 
-bool TimeManager::triggerCollectibleSpawn()
+bool TimeManager::TriggerCollectibleSpawn()
 {
-	collectibleSpawnTimer += deltaTime;
+	m_collectibleTimer += m_deltaTime;
 
-	if (collectibleSpawnTimer >= collectibleSpawnTimerMax)
+	if (m_collectibleTimer >= m_collectibleSpawnTime)
 	{
-		collectibleSpawnTimer = 0;
+		m_collectibleTimer = 0;
 		return true;
 	}
 	else
@@ -66,28 +63,36 @@ bool TimeManager::triggerCollectibleSpawn()
 }
 
 
-bool TimeManager::triggerLevelUp()
+bool TimeManager::TriggerLevelUp()
 {
-	levelUpTimer += deltaTime;
+	m_levelUpTimer += m_deltaTime;
 
-	if (levelUpTimer >= INCREASE_DIFFICULTY_TIME)
+	if (m_levelUpTimer >= INCREASE_DIFFICULTY_TIME)
 	{
-		levelUpTimer = 0;
+		m_levelUpTimer = 0;
 		return true;
 	}
 	else
 		return false;
 }
 
-bool TimeManager::IsGameOverTime()
-{
-	GameOverTimer += deltaTime;
 
-	if (GameOverTimer <= GAMEOVER_MIN_TIME)
-	{
-		GameOverTimer = 0;
-		return true;
-	}
-	else
-		return false;
+void TimeManager::SetCollectibleSpawnTime(float newTime)
+{
+	m_collectibleSpawnTime = newTime;
+}
+
+void TimeManager::SetObstacleSpawnTime(float newTime)
+{
+	m_obstacleSpawnTime = newTime;
+}
+
+float TimeManager::GetCollectibleSpawnTime() const
+{
+	return m_collectibleSpawnTime;
+}
+
+float TimeManager::GetObstacleSpawnTime() const
+{
+	return m_obstacleSpawnTime;
 }

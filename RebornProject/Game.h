@@ -4,18 +4,8 @@
 #include "Obstacle.h"
 #include "Collectible.h"
 #include "UIManager.h"
+#include "Config.h"
 #include <vector>
-
-struct Parameters {
-	 float collectibleSpeed;
-	 float obstacleSpeed;
-	 float collectibleSpawnTime;
-	 float obstacleSpawnTime;
-	 int nbrMaxObstacle;
-	 int nbrMaxCollectible;
-	 float playerSpeed;
-	 float playerRadius;
-};
 
 class Game : public GameEngine
 {
@@ -27,20 +17,19 @@ public:
 	void Render(sf::RenderTarget& target) override;
 	void RenderDebugMenu(sf::RenderTarget& target) override;
 
-private:
-	
-	Player player;
-	Parameters init;
+private:	
+	Parameters initConfig;
+	Parameters currentConfig;
+	Parameters tempConfig;
+	Player* player;
 	std::vector<Obstacle> obstacles;
 	std::vector<Collectible> collectibles;
 
-	void initParameters();
 	void UpdateObstacles();
 	void UpdateCollectibles();
 	void SpawnObstacles();
 	void SpawnCollectibles();
 	void LoseAndReborn();
 	bool CheckIfGameOver();
-
 };
 

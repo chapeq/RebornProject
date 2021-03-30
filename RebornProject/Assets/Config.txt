@@ -1,0 +1,10 @@
+# Config file
+
+Collectible speed = 300.0
+Obstacle speed = 300.0
+Collectible SpawnTime = 1.0
+Obstacle SpawnTime = 1.0
+Nombre Max Collectible = 6
+Nombre Max Obstacle = 3
+Player speed = 500.0
+Player size = 20.0

@@ -4,12 +4,13 @@
 class Player : public Item
 {
 public:
-	Player();
+	Player(float speed, float radius);
 	~Player();
 
 	void Move(float time);
 	void CheckWindowBounds(sf::Vector2f windowSize);
 	void AddPoints(int points);
+
 	void SetRadius(float newRad);
 	void SetOrigin(float x, float y);
 	float GetRadius()const;
@@ -19,7 +20,6 @@ public:
 
 private:
 	sf::CircleShape* m_cercle;
-	int score;
-	float speed; 
-	
+	float m_speed;
+	int m_score;	
 };

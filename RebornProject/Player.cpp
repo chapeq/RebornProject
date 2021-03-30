@@ -1,35 +1,33 @@
 #include <stdafx.h>
 #include <Player.h>
 
-static const float PLAYER_START_RADIUS{ 20.0f };
-static const float SPEED_PLAYER{ 500.0f };
-
-Player::Player()
+Player::Player(float speed, float radius)
 {
-	m_cercle = new sf::CircleShape(PLAYER_START_RADIUS);
+	m_cercle = new sf::CircleShape(radius);
 	m_shape = m_cercle;
-	m_cercle->setOrigin(PLAYER_START_RADIUS, PLAYER_START_RADIUS);
+	m_cercle->setOrigin(radius, radius);
 	m_cercle->setFillColor(sf::Color::Cyan);
 	m_cercle->setPosition(0,0);
-
-	score = 0;
-	speed = SPEED_PLAYER;
+	m_speed = speed;
+	m_score = 0;
 }
 
 Player::~Player()
 {
-	//pb delete m_shape
+	delete m_cercle;
+	m_cercle = nullptr;
+	m_shape = nullptr;
 }
 
 void Player::Move(float time)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		m_cercle->move(-speed*time, 0);
+		m_cercle->move(-m_speed*time, 0);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		m_cercle->move(speed*time, 0);
+		m_cercle->move(m_speed*time, 0);
 	
 	}
 
@@ -60,15 +58,13 @@ void Player::SetOrigin(float x, float y)
 
 void Player::SetSpeed(float newSpeed)
 {
-	speed = newSpeed;
+	m_speed = newSpeed;
 }
 
 float Player::GetSpeed() const
 {
-	return speed;
+	return m_speed;
 }
-
-
 
 float Player::GetRadius() const
 {
@@ -77,10 +73,10 @@ float Player::GetRadius() const
 
 int Player::GetScore() const
 {
-	return score;
+	return m_score;
 }
 
 void Player::AddPoints(int points)
 {
-	score += points;
+	m_score += points;
 }

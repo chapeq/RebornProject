@@ -18,30 +18,30 @@ GameEngine::GameEngine()
 
     m_window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
    
-    windowSize = WINDOW_SIZE;
-    mState = GameState::Start;
+    m_windowSize = WINDOW_SIZE;
+    m_State = GameState::Start;
 
     ImGui::SFML::Init(m_window);
 
     float deltaTime{ 1.0f / MAX_FRAMERATE };
     sf::Clock clock;
-    timer = new TimeManager(clock, deltaTime);
+    m_Timer = new TimeManager(clock, deltaTime);
 }
 
 GameEngine::~GameEngine()
 {
+    delete m_Timer;
     ImGui::SFML::Shutdown();
 }
 
 void GameEngine::RunGameLoop()
 {
-
         bool toggleImGui = true;
-        audio.PlayMusic();
+        //m_Audio.PlayMusic();
 
         while (m_window.isOpen())
         {
-            timer->restartClock();
+            m_Timer->RestartClock();
 
             sf::Event event;
             while (m_window.pollEvent(event))
@@ -54,15 +54,15 @@ void GameEngine::RunGameLoop()
                 case sf::Event::KeyPressed:
                     if (event.key.code == sf::Keyboard::Escape)
                         m_window.close();
-                    else if ((event.key.code == sf::Keyboard::Space) && (mState == GameState::Start))
+                    else if ((event.key.code == sf::Keyboard::Space) && (m_State == GameState::Start))
                     {
-                        mState = GameState::Playing;
-                        uiManage.hideStartText();
+                        m_State = GameState::Playing;
+                        m_UIManage.HideStartText();
                     }
-                    else if ((event.key.code == sf::Keyboard::R) && (mState == GameState::Lose))
+                    else if ((event.key.code == sf::Keyboard::R) && (m_State == GameState::Lose))
                     {
-                        mState = GameState::Playing;
-                        uiManage.hideRebornText();
+                        m_State = GameState::Playing;
+                        m_UIManage.HideRebornText();
                     }
                     break;
                 case sf::Event::Resized:
@@ -74,7 +74,7 @@ void GameEngine::RunGameLoop()
                 ImGui::SFML::ProcessEvent(event);
             }
 
-            ImGui::SFML::Update(m_window, timer->restartClock());
+            ImGui::SFML::Update(m_window, m_Timer->RestartClock());
 
             Update();
             Render(m_window);
@@ -88,6 +88,6 @@ void GameEngine::RunGameLoop()
 
             m_window.display();
 
-            timer->setDeltaTime();
+            m_Timer->SetDeltaTime();
         }
     }

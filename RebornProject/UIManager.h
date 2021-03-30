@@ -5,11 +5,11 @@ public:
 	UIManager();
 	~UIManager();
 
-	void afficheScore(std::string scoreText);
-	void afficheRebornText();
-	void afficheGameOverText();
-	void hideStartText();
-	void hideRebornText();
+	void AfficheScore(std::string scoreText);
+	void AfficheRebornText();
+	void AfficheGameOverText();
+	void HideStartText();
+	void HideRebornText();
 	void Draw(sf::RenderTarget& target);
 
 private :

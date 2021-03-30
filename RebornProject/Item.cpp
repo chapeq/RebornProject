@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Item.h"
+#include <iostream>
 
 Item::Item()
 {
@@ -15,7 +16,7 @@ void Item::Draw(sf::RenderTarget& target)
 	target.draw(*m_shape);
 }
 
-const sf::FloatRect Item::getBounds() const
+const sf::FloatRect Item::GetBounds() const
 {
 	return m_shape->getGlobalBounds();
 }

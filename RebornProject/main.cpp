@@ -7,13 +7,11 @@ int main()
 	Game game{};
 	srand((unsigned)time(NULL));
 
-	std::cout << "HELLO" << std::endl;
-
 	game.RunGameLoop();
-
 
 	return EXIT_SUCCESS;
 }
+
 /*
 int main()
 {

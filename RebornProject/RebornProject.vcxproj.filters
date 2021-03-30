@@ -29,6 +29,7 @@
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="Config.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -50,6 +51,7 @@
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="Config.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">
