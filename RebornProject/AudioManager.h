@@ -9,13 +9,14 @@ public:
 	void PlayCollect();
 	void PlayHit();
 	void PlayGameOver();
-	void Stop();
 
 private :
 	sf::Music backgroundMusic;
-	sf::SoundBuffer collect;
-	sf::SoundBuffer smallgameover;
-	sf::SoundBuffer GameOver;
-	sf::Sound sound1, sound2, sound3;
+	sf::SoundBuffer bufCollect;
+	sf::SoundBuffer bufSmallgameover;
+	sf::SoundBuffer bufGameOver;
+	sf::Sound sdCollect;
+	sf::Sound sdSmallgameover;
+	sf::Sound sdGameOver;
 };
 

@@ -14,7 +14,7 @@ Collectible::Collectible(float speed)
 
 Collectible::~Collectible()
 {
-	//delete m_triangle;
+	delete m_triangle;
 	m_triangle = nullptr;
 	m_shape = nullptr;
 }

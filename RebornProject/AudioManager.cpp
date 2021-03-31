@@ -4,7 +4,21 @@
 
 AudioManager::AudioManager()
 {
-			
+	if (!bufCollect.loadFromFile("Assets/collectsound.ogg"))
+		std::cout << "ERROR Failed to load sound" << std::endl;
+
+	if (!bufSmallgameover.loadFromFile("Assets/smallgameover.ogg"))
+		std::cout << "ERROR Failed to load sound" << std::endl;
+
+	if (!bufGameOver.loadFromFile("Assets/GameOver.ogg"))
+		std::cout << "ERROR Failed to load sound" << std::endl;
+
+	if (!backgroundMusic.openFromFile("Assets/backgroundMusic.ogg"))
+		std::cout << "ERROR Failed to load music" << std::endl;
+
+	sdCollect.setBuffer(bufCollect);
+	sdSmallgameover.setBuffer(bufSmallgameover);
+	sdGameOver.setBuffer(bufGameOver);
 }
 
 AudioManager::~AudioManager()
@@ -13,36 +27,24 @@ AudioManager::~AudioManager()
 
 void AudioManager::PlayMusic()
 {
-	if (!backgroundMusic.openFromFile("Assets/backgroundMusic.ogg"))
-		std::cout << "ERROR Failed to load music" << std::endl;
-
 	backgroundMusic.play();
 	backgroundMusic.setLoop(true);
 }
 
 void AudioManager::PlayCollect()
 {
-	if (!collect.loadFromFile("Assets/collectsound.ogg"))
-		std::cout << "ERROR Failed to load sound" << std::endl;
-
-	sound1.setBuffer(collect);
-	sound1.play();
+	if(sdCollect.getStatus() != sf::Sound::Status::Playing)
+		sdCollect.play();
 }
 
 void AudioManager::PlayHit()
 {
-	if (!smallgameover.loadFromFile("Assets/smallgameover.ogg"))
-		std::cout << "ERROR Failed to load sound" << std::endl;
-
-	sound2.setBuffer(smallgameover);
-	sound2.play();
+	backgroundMusic.pause();
+	sdSmallgameover.play();
 }
 
 void AudioManager::PlayGameOver()
 {
-	if (!GameOver.loadFromFile("Assets/GameOver.ogg"))
-		std::cout << "ERROR Failed to load sound" << std::endl;
-
-	sound3.setBuffer(GameOver);
-	sound3.play();
+	backgroundMusic.pause();
+	sdGameOver.play();
 }

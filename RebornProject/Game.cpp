@@ -15,42 +15,57 @@ Game::Game() : GameEngine{}
 	player->SetPosition(sf::Vector2f(m_windowSize.x / 2, m_windowSize.y - 50));	
 	m_Timer->SetCollectibleSpawnTime(initConfig.collectibleSpawnTime);
 	m_Timer->SetObstacleSpawnTime(initConfig.obstacleSpawnTime);
+
+	activateAI = false;
 }
 
 Game::~Game()
 {
 	delete player;
+	for (auto& c : collectibles)
+	{
+		delete c;
+	}
+	for (auto& o : obstacles)
+	{
+		delete o;
+	}
 }
 
 
 void Game::SpawnObstacles()
 {
-	Obstacle obst(currentConfig.obstacleSpeed) ;
-	float x = static_cast<float>(rand() % static_cast<int>(m_windowSize.x - obst.GetSize().x));
-	float y = -10.0f; //offset
-	obst.SetPosition(sf::Vector2f(x, y));
+	Obstacle* obst = new Obstacle(currentConfig.obstacleSpeed) ;
+	float x = static_cast<float>(rand() % static_cast<int>(m_windowSize.x - obst->GetSize().x));
+	float y = -20.0f; //offset
+	obst->SetPosition(sf::Vector2f(x, y));
 	obstacles.push_back(obst);
 }
 
-void Game::SpawnCollectibles()
+
+void Game::CheckObstacleSpawn()
 {
-	int randNbrCol = rand() % currentConfig.nbrMaxCollectible + 1;
-	Collectible firstCol(currentConfig.collectibleSpeed);
-	float x = static_cast<float>(rand() % static_cast<int>(m_windowSize.x - (firstCol.GetRadius()*2)));
-	float y = -10.0f; //offset
-	firstCol.SetPosition(sf::Vector2f(x, y));
-	collectibles.push_back(firstCol);
+	//Respawn if collide with other obstacle
+	int current = 1;
+	int cptAttempt = 0;
 
-	//Spawn next collectibles with 10.f offset between each other on y axis
-	for (int i = 1; i < randNbrCol+1 ; i++)
+	if (obstacles.size() >= 2)
 	{
-		Collectible nextCol(currentConfig.collectibleSpeed);
-		nextCol.SetPosition(sf::Vector2f(x , i * ((nextCol.GetRadius()*2) + 10.0f)));
-		collectibles.push_back(nextCol);
+		while (current < obstacles.size() && cptAttempt < 10)
+		{
+			int previous = current - 1;
+			if (obstacles[current]->GetBounds().intersects(obstacles[previous]->GetBounds()))
+			{
+				delete obstacles[current];
+				obstacles.erase(obstacles.begin() + current);
+				SpawnObstacles();
+				cptAttempt++;
+			}
+			else
+				current++;
+		}
 	}
-			
 }
-
 
 void Game::UpdateObstacles()
 {
@@ -63,27 +78,64 @@ void Game::UpdateObstacles()
 		{
 			SpawnObstacles();
 		}
+		CheckObstacleSpawn();
 	}
-	
+
 	//Update
 	for (int i = 0; i < obstacles.size(); i++)
 	{
 		//Move Down
-		obstacles[i].Move(m_Timer->GetDeltaTime());
+		obstacles[i]->Move(m_Timer->GetDeltaTime());
 
 		//Check collision with player
-		if (obstacles[i].GetBounds().intersects(player->GetBounds()))
+		if (obstacles[i]->GetBounds().intersects(player->GetBounds()))
 		{
 			LoseAndReborn();
 		}
 		//Erase if out of bounds
-		else if (obstacles[i].GetPosition().y > m_windowSize.y)
+		else if (obstacles[i]->GetPosition().y > m_windowSize.y)
 		{
+			delete obstacles[i];
 			obstacles.erase(obstacles.begin() + i);
 		}
 	}
 }
 
+void Game::SpawnCollectibles()
+{
+	int randNbrCol = rand() % currentConfig.nbrMaxCollectible + 1;
+	Collectible* firstCol = new Collectible(currentConfig.collectibleSpeed);
+	float x = static_cast<float>(rand() % static_cast<int>(m_windowSize.x - (firstCol->GetRadius() * 2)));
+	float y = -20.0f; //offset
+	firstCol->SetPosition(sf::Vector2f(x, y));
+	collectibles.push_back(firstCol);
+
+	//Spawn next collectibles with 10.f offset between each other on y axis
+	for (int i = 1; i < randNbrCol + 1; i++)
+	{
+		Collectible* nextCol = new Collectible(currentConfig.collectibleSpeed);
+		nextCol->SetPosition(sf::Vector2f(x, i * ((nextCol->GetRadius() * 2) + 10.0f)));
+		collectibles.push_back(nextCol);
+	}
+
+}
+
+void Game::CheckCollectibleSpawn()
+{
+	//Erase if collide with obstacle
+	for (auto& e : obstacles)
+	{
+		for (int i = 0; i < collectibles.size(); i++)
+		{
+			if (collectibles[i]->GetBounds().intersects(e->GetBounds()))
+			{
+				delete collectibles[i];
+				collectibles.erase(collectibles.begin() + i);
+			}
+		}
+	}
+
+}
 
 void Game::UpdateCollectibles()
 {
@@ -92,38 +144,30 @@ void Game::UpdateCollectibles()
 	{
 		SpawnCollectibles();
 	}
-	
-	//Erase if collide with obstacle
-	for (auto& e : obstacles)
-	{
-		for (int i = 0; i < collectibles.size(); i++)
-		{
-			if (collectibles[i].GetBounds().intersects(e.GetBounds()))
-			{
-				collectibles.erase(collectibles.begin() + i);
-			}
-		}
-	}
-	
+
+	CheckCollectibleSpawn();
+
 	//Update
 	for (int i = 0; i < collectibles.size(); i++)
 	{
 		//Move Down
-		collectibles[i].Move(m_Timer->GetDeltaTime());
+		collectibles[i]->Move(m_Timer->GetDeltaTime());
 
 		//Check collision with player
-		if (collectibles[i].GetBounds().intersects(player->GetBounds()))
+		if (collectibles[i]->GetBounds().intersects(player->GetBounds()))
 		{
 			m_Audio.PlayCollect();
+			delete collectibles[i];
 			collectibles.erase(collectibles.begin() + i);
 			player->AddPoints(1);
 			std::string score = "Score : " + std::to_string(player->GetScore());
 			m_UIManage.AfficheScore(score);
 		}
 		//Erase if out of bounds
-		else if (collectibles[i].GetPosition().y > m_windowSize.y)
+		else if (collectibles[i]->GetPosition().y > m_windowSize.y)
 		{
-			collectibles.erase(collectibles.begin() + i);
+			delete collectibles[i];
+			collectibles.erase(collectibles.begin() + i);		
 		}
 
 	}
@@ -152,9 +196,17 @@ void Game::LoseAndReborn()
 		m_UIManage.AfficheRebornText();
 		m_State = GameState::Lose;
 
+		for (auto& c : collectibles)
+		{
+			delete c;
+		}
+		for (auto& o : obstacles)
+		{
+			delete o;
+		}
 		obstacles.clear();
 		collectibles.clear();
-
+	
 		float newRadius = player->GetRadius() + 5;
 		player->SetRadius(newRadius);
 		player->SetOrigin(newRadius, newRadius);
@@ -162,7 +214,6 @@ void Game::LoseAndReborn()
 
 	}
 }
-
 
 void Game::Update()
 {
@@ -172,13 +223,24 @@ void Game::Update()
 	UpdateObstacles();
 	UpdateCollectibles();
 
-	player->Move(m_Timer->GetDeltaTime());
+	if (activateAI)
+	{
+		MoveAI(player, obstacles, collectibles);
+	}
+	else
+	{
+		player->Move(m_Timer->GetDeltaTime());
+	}
 	player->CheckWindowBounds(m_windowSize);
 
-	if (m_Timer->TriggerLevelUp())
+	if (m_Timer->TriggerLevelUp() && currentConfig.increaseDifficulty)
 	{
-		currentConfig.collectibleSpeed += 50.0f;
-		currentConfig.obstacleSpeed += 50.0f;
+		currentConfig.collectibleSpeed += 30.0f;
+		currentConfig.obstacleSpeed += 30.0f;
+		m_Timer->SetCollectibleSpawnTime(m_Timer->GetCollectibleSpawnTime() - 0.05f);
+		m_Timer->SetObstacleSpawnTime(m_Timer->GetObstacleSpawnTime() - 0.05f);
+		player->SetSpeed(player->GetSpeed() + 30.0f);
+		
 	}
 	
 }
@@ -189,11 +251,11 @@ void Game::Render(sf::RenderTarget& target)
 	m_UIManage.Draw(target);
 	for (auto& c : collectibles)
 	{
-		c.Draw(target);
+		c->Draw(target);
 	}
 	for (auto& o : obstacles)
 	{
-		o.Draw(target);
+		o->Draw(target);
 	}
 	player->Draw(target);
 }
@@ -205,6 +267,9 @@ void Game::RenderDebugMenu(sf::RenderTarget& target)
 	ImGui::Begin("Configuration window");
 	ImGui::NewLine();
 
+	ImGui::Checkbox("Increase difficulty over time", &tempConfig.increaseDifficulty);
+	
+	ImGui::NewLine();
 	if (ImGui::CollapsingHeader("Obstacles and Collectibles : "))
 	{
 		ImGui::SliderFloat("CollectibleSpeed", &tempConfig.collectibleSpeed, 100.0f, 900.0f, "%.1f");
@@ -247,9 +312,14 @@ void Game::RenderDebugMenu(sf::RenderTarget& target)
 	if (ImGui::Button("Get current parameters"))
 	{
 		if (!obstacles.empty())
-		currentConfig.obstacleSpeed = obstacles.back().GetSpeed();
+		currentConfig.obstacleSpeed = obstacles.back()->GetSpeed();
 		if (!collectibles.empty())
-		currentConfig.collectibleSpeed = collectibles.back().GetSpeed();
+		currentConfig.collectibleSpeed = collectibles.back()->GetSpeed();
+
+		currentConfig.obstacleSpawnTime = m_Timer->GetObstacleSpawnTime();
+		currentConfig.collectibleSpawnTime = m_Timer->GetCollectibleSpawnTime();
+		currentConfig.playerRadius = player->GetRadius();
+		currentConfig.playerSpeed = player->GetSpeed();
 
 		tempConfig = currentConfig;
 	}

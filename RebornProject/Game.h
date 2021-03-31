@@ -5,6 +5,7 @@
 #include "Collectible.h"
 #include "UIManager.h"
 #include "Config.h"
+#include "AI.h"
 #include <vector>
 
 class Game : public GameEngine
@@ -22,13 +23,16 @@ private:
 	Parameters currentConfig;
 	Parameters tempConfig;
 	Player* player;
-	std::vector<Obstacle> obstacles;
-	std::vector<Collectible> collectibles;
+	std::vector<Obstacle*> obstacles;
+	std::vector<Collectible*> collectibles;
+	bool activateAI;
 
 	void UpdateObstacles();
 	void UpdateCollectibles();
 	void SpawnObstacles();
 	void SpawnCollectibles();
+	void CheckObstacleSpawn();
+	void CheckCollectibleSpawn();
 	void LoseAndReborn();
 	bool CheckIfGameOver();
 };

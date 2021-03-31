@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-static const float MAX_FRAMERATE{ 60.0f };
+static const int MAX_FRAMERATE{ 60 };
 static const sf::Vector2f WINDOW_SIZE{ 800, 600 };
 static const char* APP_NAME = "REBORN" ;
 
@@ -37,7 +37,6 @@ GameEngine::~GameEngine()
 void GameEngine::RunGameLoop()
 {
         bool toggleImGui = true;
-        //m_Audio.PlayMusic();
 
         while (m_window.isOpen())
         {
@@ -56,11 +55,13 @@ void GameEngine::RunGameLoop()
                         m_window.close();
                     else if ((event.key.code == sf::Keyboard::Space) && (m_State == GameState::Start))
                     {
+                        m_Audio.PlayMusic();
                         m_State = GameState::Playing;
                         m_UIManage.HideStartText();
                     }
                     else if ((event.key.code == sf::Keyboard::R) && (m_State == GameState::Lose))
                     {
+                        m_Audio.PlayMusic();
                         m_State = GameState::Playing;
                         m_UIManage.HideRebornText();
                     }

@@ -15,7 +15,7 @@ Obstacle::Obstacle(float speed)
 Obstacle::~Obstacle()
 {
 	
-		//delete m_rect;
+		delete m_rect;
 		m_rect = nullptr;
 	m_shape = nullptr;
 }

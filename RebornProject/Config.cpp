@@ -23,6 +23,13 @@ void GetInitConfig(Parameters& out)
 			std::size_t delimiterPos = line.find("=");
 			std::string param = line.substr(0, delimiterPos);
 
+			if (param == "Increasedifficulty")
+			{
+				if (line.substr(delimiterPos + 1) == "true")
+					out.increaseDifficulty = true;
+				else if (line.substr(delimiterPos + 1) == "false")
+					out.increaseDifficulty = false;
+			}
 			if (param == "Collectiblespeed")		
 				out.collectibleSpeed = std::stof(line.substr(delimiterPos + 1));
 			if (param == "Obstaclespeed")
