@@ -9,11 +9,11 @@ TimeManager::TimeManager(sf::Clock clock, float deltaTime)
 	m_clock = clock;
 	m_deltaTime = deltaTime;
 
-	 m_collectibleSpawnTime = 0.0f;
-	 m_obstacleSpawnTime = 0.0f;
-	 m_collectibleTimer = 0.0f;
-	 m_obstacleTimer = 0.0f;
-	 m_levelUpTimer = 0.0f;
+	m_collectibleSpawnTime = 0.0f;
+	m_obstacleSpawnTime = 0.0f;
+	m_collectibleTimer = 0.0f;
+	m_obstacleTimer = 0.0f;
+	m_levelUpTimer = 0.0f;
 }
 
 TimeManager::~TimeManager()
@@ -45,7 +45,7 @@ bool TimeManager::TriggerObstacleSpawn()
 		return true;
 	}
 	else
-		return false; 
+		return false;
 }
 
 bool TimeManager::TriggerCollectibleSpawn()

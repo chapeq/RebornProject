@@ -10,7 +10,7 @@ public:
 	void PlayHit();
 	void PlayGameOver();
 
-private :
+private:
 	sf::Music backgroundMusic;
 	sf::SoundBuffer bufCollect;
 	sf::SoundBuffer bufSmallgameover;

@@ -30,5 +30,5 @@ private:
 	sf::CircleShape* m_cercle;
 	sf::RectangleShape* m_frontCollider;
 	sf::RectangleShape* m_sideCollider;
-	int m_score;	
+	int m_score;
 };

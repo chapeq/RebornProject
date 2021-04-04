@@ -20,16 +20,35 @@
     <ClCompile Include="..\external\imgui-master\imgui_tables.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Collectible.cpp" />
-    <ClCompile Include="Item.cpp" />
     <ClCompile Include="GameEngine.cpp" />
-    <ClCompile Include="UIManager.cpp" />
-    <ClCompile Include="TimeManager.cpp" />
-    <ClCompile Include="AudioManager.cpp" />
-    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="AudioManager.cpp">
+      <Filter>GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Collectible.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Obstacle.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.cpp">
+      <Filter>ExternalConfig</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -42,20 +61,48 @@
     <ClInclude Include="..\external\imgui-sfml-master\imgui-SFML.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Collectible.h" />
-    <ClInclude Include="Item.h" />
     <ClInclude Include="GameEngine.h" />
-    <ClInclude Include="UIManager.h" />
-    <ClInclude Include="TimeManager.h" />
-    <ClInclude Include="AudioManager.h" />
-    <ClInclude Include="Config.h" />
+    <ClInclude Include="AudioManager.h">
+      <Filter>GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Collectible.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Obstacle.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>ExternalConfig</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">
       <UniqueIdentifier>{f630cd3c-1cea-471c-9a95-a35b86a8dd9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameManager">
+      <UniqueIdentifier>{7532f548-b854-4936-8210-824e56ef39fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities">
+      <UniqueIdentifier>{8fb0de42-2c18-4985-8621-7cb3c2d800b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ExternalConfig">
+      <UniqueIdentifier>{962de545-f08c-42c1-be8b-4989e4ba7521}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

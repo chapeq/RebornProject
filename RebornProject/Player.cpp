@@ -8,17 +8,17 @@ Player::Player(float speed, float radius)
 	m_shape = m_cercle;
 	m_cercle->setOrigin(radius, radius);
 	m_cercle->setFillColor(sf::Color::Cyan);
-	m_cercle->setPosition(0,0);
+	m_cercle->setPosition(0, 0);
 	m_speed = speed;
 	m_score = 0;
 
 	// Colliders for AI part - in development
-	m_frontCollider = new sf::RectangleShape(sf::Vector2f(m_cercle->getRadius()*2, m_cercle->getRadius()*6));
+	m_frontCollider = new sf::RectangleShape(sf::Vector2f(m_cercle->getRadius() * 2, m_cercle->getRadius() * 6));
 	m_frontCollider->setOrigin(m_frontCollider->getSize().x / 2, m_frontCollider->getSize().y);
 	m_frontCollider->setPosition(m_cercle->getPosition());
 
-	m_sideCollider = new sf::RectangleShape(sf::Vector2f(m_cercle->getRadius() * 4, m_cercle->getRadius() *2));
-	m_sideCollider->setOrigin(m_sideCollider->getSize().x / 2, m_sideCollider->getSize().y/2);
+	m_sideCollider = new sf::RectangleShape(sf::Vector2f(m_cercle->getRadius() * 4, m_cercle->getRadius() * 2));
+	m_sideCollider->setOrigin(m_sideCollider->getSize().x / 2, m_sideCollider->getSize().y / 2);
 	m_sideCollider->setPosition(m_cercle->getPosition());
 }
 
@@ -33,12 +33,12 @@ void Player::Move(float time)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		m_cercle->move(-m_speed*time, 0);
+		m_cercle->move(-m_speed * time, 0);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		m_cercle->move(m_speed*time, 0);
-	
+		m_cercle->move(m_speed * time, 0);
+
 	}
 }
 
@@ -121,21 +121,18 @@ bool Player::IsAvoidingObstacles(std::vector<Obstacle*> obstacles, sf::Vector2f 
 			if (m_frontCollider->getGlobalBounds().intersects(
 				obstacles[i]->GetBounds()))
 			{
-				if (pos >= windowSize.x - 200)
-					pos -= obstacles[i]->GetSize().x;
-				if (pos <= 200)
-					pos += obstacles[i]->GetSize().x;
-				else
-					pos -= obstacles[i]->GetSize().x;
+				if (pos > windowSize.x / 2)
+					pos -= obstacles[i]->GetSize().x + m_cercle->getRadius();
+				if (pos < windowSize.x / 2)
+					pos += obstacles[i]->GetSize().x + m_cercle->getRadius();
 
-				float moveto = m_cercle->getPosition().x + (pos - m_cercle->getPosition().x) * 2 * time;
+				float moveto = m_cercle->getPosition().x + (pos - m_cercle->getPosition().x) * 3 * time;
 				if (CanMove(obstacles))
 				{
-					m_cercle->setPosition(pos, m_cercle->getPosition().y);
+					m_cercle->setPosition(moveto, m_cercle->getPosition().y);
 				}
 				m_frontCollider->setPosition(m_cercle->getPosition());
 				m_sideCollider->setPosition(m_cercle->getPosition());
-				std::cout << pos << std::endl;
 				collide = true;
 			}
 		}
@@ -161,7 +158,7 @@ void Player::MoveToCollect(std::vector<Collectible*> collectibles, std::vector<O
 	if (!collectibles.empty())
 	{
 		float dest = collectibles[0]->GetPosition().x;
-		float moveto = m_cercle->getPosition().x + (dest - m_cercle->getPosition().x) * 2 * time;
+		float moveto = m_cercle->getPosition().x + (dest - m_cercle->getPosition().x) * 3 * time;
 		for (int i = 0; i < collectibles.size() - 1; i++)
 		{
 			if ((!IsAvoidingObstacles(obstacles, windowSize, time)) && CanMove(obstacles))

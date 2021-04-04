@@ -30,7 +30,7 @@ void GetInitConfig(Parameters& out)
 				else if (line.substr(delimiterPos + 1) == "false")
 					out.increaseDifficulty = false;
 			}
-			if (param == "Collectiblespeed")		
+			if (param == "Collectiblespeed")
 				out.collectibleSpeed = std::stof(line.substr(delimiterPos + 1));
 			if (param == "Obstaclespeed")
 				out.obstacleSpeed = std::stof(line.substr(delimiterPos + 1));

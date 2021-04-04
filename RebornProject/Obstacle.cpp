@@ -8,7 +8,7 @@ Obstacle::Obstacle(float speed)
 	m_rect = new sf::RectangleShape(OBSTACLE_SIZE);
 	m_shape = m_rect;
 	m_rect->setFillColor(sf::Color::Red);
-	m_rect->setPosition(0,0);	
+	m_rect->setPosition(0, 0);
 	m_rect->setOrigin(OBSTACLE_SIZE.x / 2, OBSTACLE_SIZE.y / 2);
 	m_speed = speed;
 }

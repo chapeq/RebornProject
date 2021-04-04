@@ -8,7 +8,7 @@ public:
 	~Collectible();
 
 	void Move(float time);
-	float GetRadius() const;	
+	float GetRadius() const;
 
 private:
 	sf::CircleShape* m_triangle;

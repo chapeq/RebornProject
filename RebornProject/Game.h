@@ -16,7 +16,7 @@ public:
 	void Render(sf::RenderTarget& target) override;
 	void RenderDebugMenu(sf::RenderTarget& target) override;
 
-private:	
+private:
 	Parameters initConfig;
 	Parameters currentConfig;
 	Parameters tempConfig;

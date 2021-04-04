@@ -12,7 +12,7 @@ public:
 	void HideRebornText();
 	void Draw(sf::RenderTarget& target);
 
-private :
+private:
 	sf::Font fontStart;
 	sf::Font fontScore;
 	sf::Font fontGameOver;

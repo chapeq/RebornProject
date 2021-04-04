@@ -1,10 +1,10 @@
 #pragma once
-class Item  
+class Item
 {
 public:
 	Item();
 	~Item();
-	
+
 	void Draw(sf::RenderTarget& target);
 	const sf::FloatRect GetBounds() const;
 
@@ -14,7 +14,7 @@ public:
 	float GetSpeed()const;
 
 protected:
-	sf::Shape* m_shape; 
+	sf::Shape* m_shape;
 	float m_speed;
 };
- 
+

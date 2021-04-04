@@ -33,7 +33,7 @@ void AudioManager::PlayMusic()
 
 void AudioManager::PlayCollect()
 {
-	if(sdCollect.getStatus() != sf::Sound::Status::Playing)
+	if (sdCollect.getStatus() != sf::Sound::Status::Playing)
 		sdCollect.play();
 }
 

@@ -11,6 +11,6 @@ public:
 	sf::Vector2f GetSize() const;
 
 private:
-	sf::RectangleShape* m_rect;	
+	sf::RectangleShape* m_rect;
 };
 
