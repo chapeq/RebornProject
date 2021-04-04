@@ -8,9 +8,13 @@
 - Suppression objets en dehors de la fenetre - Done
 - Ajout points player - score - Done
 - Gestion restart game (pause game, reset objets, grossir player, garder score) - Done
-
-- Gestion Game Over (condition de game over? si le player atteint une certaine taille ?)
+- Gestion Game Over (condition de game over? si le player atteint une certaine taille ?) - Done
 - Ajout UI : Start game - score - high score - Restart Game - Game Over  - Done
-- Ajout Audio
-- Facade Pattern
-- Ajout parametres fichier/IMGUI
+- Ajout Audio - Done
+- Facade Pattern - Done 
+- Ajout parametres fichier/IMGUI - Done 
+
+- Ameliorer spawning obstacles
+- Ameliorer IA 
+- Ameliorer code / gestion des erreurs 
+- Ajout bouton/touche restart ? 
