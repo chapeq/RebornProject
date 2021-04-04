@@ -9,6 +9,7 @@ Collectible::Collectible(float speed)
 	m_shape = m_triangle;
 	m_triangle->setFillColor(sf::Color::Green);	
 	m_triangle->setPosition(0,0);
+	m_triangle->setOrigin(COLLECTIBLE_RADIUS, COLLECTIBLE_RADIUS);
 	m_speed = speed;
 }
 
@@ -25,15 +26,6 @@ void Collectible::Move(float time)
 	m_triangle->move(0.f, m_speed * time);
 }
 
-void Collectible::SetSpeed(float newSpeed)
-{
-	m_speed = newSpeed;
-}
-
-float Collectible::GetSpeed() const
-{
-	return m_speed;
-}
 
 float Collectible::GetRadius() const
 {

@@ -3,7 +3,6 @@
 #include <iostream>
 
 static const float INCREASE_DIFFICULTY_TIME{ 10.f };
-static const float GAMEOVER_MIN_TIME{ 1.0f };
 
 TimeManager::TimeManager(sf::Clock clock, float deltaTime)
 {

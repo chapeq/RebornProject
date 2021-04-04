@@ -5,6 +5,7 @@
 Item::Item()
 {
 	m_shape = nullptr;
+	m_speed = 0.0f;
 }
 
 Item::~Item()
@@ -32,3 +33,12 @@ sf::Vector2f Item::GetPosition() const
 	return m_shape->getPosition();
 }
 
+void Item::SetSpeed(float newSpeed)
+{
+	m_speed = newSpeed;
+}
+
+float Item::GetSpeed() const
+{
+	return m_speed;
+}

@@ -10,8 +10,11 @@ public:
 
 	void SetPosition(sf::Vector2f pos);
 	sf::Vector2f GetPosition() const;
+	void SetSpeed(float newSpeed);
+	float GetSpeed()const;
 
 protected:
 	sf::Shape* m_shape; 
+	float m_speed;
 };
  

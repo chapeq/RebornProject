@@ -3,9 +3,7 @@
 #include "Player.h"
 #include "Obstacle.h"
 #include "Collectible.h"
-#include "UIManager.h"
 #include "Config.h"
-#include "AI.h"
 #include <vector>
 
 class Game : public GameEngine
@@ -25,7 +23,6 @@ private:
 	Player* player;
 	std::vector<Obstacle*> obstacles;
 	std::vector<Collectible*> collectibles;
-	bool activateAI;
 
 	void UpdateObstacles();
 	void UpdateCollectibles();

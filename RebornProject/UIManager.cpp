@@ -28,12 +28,12 @@ UIManager::~UIManager()
 {
 }
 
-void UIManager::AfficheScore(std::string score)
+void UIManager::ShowScore(std::string score)
 {
 	scoreText.setString(score);
 }
 
-void UIManager::AfficheRebornText()
+void UIManager::ShowRebornText()
 {
 	rebornText.setFont(fontStart);
 	rebornText.setString("You Died ! Press R To Reborn !");
@@ -42,7 +42,7 @@ void UIManager::AfficheRebornText()
 	rebornText.setFillColor(sf::Color::White);
 }
 
-void UIManager::AfficheGameOverText()
+void UIManager::ShowGameOverText()
 {
 	if (!fontGameOver.loadFromFile("Assets/game_over.ttf"))
 		std::cout << "ERROR Failed to load font" << std::endl;

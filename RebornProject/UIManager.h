@@ -5,9 +5,9 @@ public:
 	UIManager();
 	~UIManager();
 
-	void AfficheScore(std::string scoreText);
-	void AfficheRebornText();
-	void AfficheGameOverText();
+	void ShowScore(std::string scoreText);
+	void ShowRebornText();
+	void ShowGameOverText();
 	void HideStartText();
 	void HideRebornText();
 	void Draw(sf::RenderTarget& target);
@@ -16,6 +16,7 @@ private :
 	sf::Font fontStart;
 	sf::Font fontScore;
 	sf::Font fontGameOver;
+
 	sf::Text scoreText;
 	sf::Text startText;
 	sf::Text rebornText;

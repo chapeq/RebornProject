@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Game.h"
 #include <iostream>
-#include <vector>
 
 static const float PLAYER_MAX_SIZE{ 80.0f };
 
@@ -16,7 +15,6 @@ Game::Game() : GameEngine{}
 	m_Timer->SetCollectibleSpawnTime(initConfig.collectibleSpawnTime);
 	m_Timer->SetObstacleSpawnTime(initConfig.obstacleSpawnTime);
 
-	activateAI = false;
 }
 
 Game::~Game()
@@ -161,7 +159,7 @@ void Game::UpdateCollectibles()
 			collectibles.erase(collectibles.begin() + i);
 			player->AddPoints(1);
 			std::string score = "Score : " + std::to_string(player->GetScore());
-			m_UIManage.AfficheScore(score);
+			m_UIManage.ShowScore(score);
 		}
 		//Erase if out of bounds
 		else if (collectibles[i]->GetPosition().y > m_windowSize.y)
@@ -178,7 +176,7 @@ bool Game::CheckIfGameOver()
 	if (player->GetRadius() >= PLAYER_MAX_SIZE)
 	{
 		m_Audio.PlayGameOver();
-		m_UIManage.AfficheGameOverText();
+		m_UIManage.ShowGameOverText();
 		m_State = GameState::End;
 		obstacles.clear();
 		collectibles.clear();
@@ -193,7 +191,7 @@ void Game::LoseAndReborn()
 	if (!CheckIfGameOver())
 	{
 		m_Audio.PlayHit();
-		m_UIManage.AfficheRebornText();
+		m_UIManage.ShowRebornText();
 		m_State = GameState::Lose;
 
 		for (auto& c : collectibles)
@@ -223,14 +221,10 @@ void Game::Update()
 	UpdateObstacles();
 	UpdateCollectibles();
 
-	if (activateAI)
-	{
-		MoveAI(player, obstacles, collectibles);
-	}
-	else
-	{
-		player->Move(m_Timer->GetDeltaTime());
-	}
+	/*AI function - development in progress*/
+	//player->MoveToCollect(collectibles, obstacles, m_windowSize, m_Timer->GetDeltaTime());
+
+	player->Move(m_Timer->GetDeltaTime());
 	player->CheckWindowBounds(m_windowSize);
 
 	if (m_Timer->TriggerLevelUp() && currentConfig.increaseDifficulty)
@@ -257,7 +251,9 @@ void Game::Render(sf::RenderTarget& target)
 	{
 		o->Draw(target);
 	}
+	//player->DrawBounds(target); - debug colliders for AI part
 	player->Draw(target);
+
 }
 
 

@@ -9,14 +9,14 @@ Obstacle::Obstacle(float speed)
 	m_shape = m_rect;
 	m_rect->setFillColor(sf::Color::Red);
 	m_rect->setPosition(0,0);	
+	m_rect->setOrigin(OBSTACLE_SIZE.x / 2, OBSTACLE_SIZE.y / 2);
 	m_speed = speed;
 }
 
 Obstacle::~Obstacle()
 {
-	
-		delete m_rect;
-		m_rect = nullptr;
+	delete m_rect;
+	m_rect = nullptr;
 	m_shape = nullptr;
 }
 
@@ -26,15 +26,6 @@ void Obstacle::Move(float time)
 	m_rect->move(0.f, m_speed * time);
 }
 
-void Obstacle::SetSpeed(float newSpeed)
-{
-	m_speed = newSpeed;
-}
-
-float Obstacle::GetSpeed() const
-{
-	return m_speed;
-}
 
 sf::Vector2f Obstacle::GetSize() const
 {

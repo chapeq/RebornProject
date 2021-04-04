@@ -8,13 +8,9 @@ public:
 	~Obstacle();
 
 	void Move(float time);
-	void SetSpeed(float newSpeed);
-	float GetSpeed() const;
 	sf::Vector2f GetSize() const;
 
 private:
-	sf::RectangleShape* m_rect;
-	float m_speed;
-	
+	sf::RectangleShape* m_rect;	
 };
 

@@ -1,5 +1,7 @@
 #pragma once
 #include "Item.h"
+#include "Obstacle.h"
+#include "Collectible.h"
 
 class Player : public Item
 {
@@ -15,11 +17,18 @@ public:
 	void SetOrigin(float x, float y);
 	float GetRadius()const;
 	int GetScore() const;
-	void SetSpeed(float newSpeed);
-	float GetSpeed()const;
+
+
+	// AI part - in progress 
+	void MoveToCollect(std::vector<Collectible*> collectibles, std::vector<Obstacle*> obstacles, sf::Vector2f windowSize, float time);
+	bool IsAvoidingObstacles(std::vector<Obstacle*> obstacles, sf::Vector2f windowSize, float time);
+	bool CanMove(std::vector<Obstacle*> obstacles);
+	void DrawBounds(sf::RenderTarget& target);
+
 
 private:
 	sf::CircleShape* m_cercle;
-	float m_speed;
+	sf::RectangleShape* m_frontCollider;
+	sf::RectangleShape* m_sideCollider;
 	int m_score;	
 };
