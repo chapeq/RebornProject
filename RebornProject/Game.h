@@ -6,6 +6,12 @@
 #include "Config.h"
 #include <vector>
 
+struct GameSimulation {
+	Player* player;
+	std::vector<Obstacle*> obstacles;
+	std::vector<Collectible*> collectibles;
+};
+
 class Game : public GameEngine
 {
 public:
@@ -20,9 +26,10 @@ private:
 	Parameters initConfig;
 	Parameters currentConfig;
 	Parameters tempConfig;
-	Player* player;
-	std::vector<Obstacle*> obstacles;
-	std::vector<Collectible*> collectibles;
+	GameSimulation game;
+	//Player* player;
+	//std::vector<Obstacle*> obstacles;
+	//std::vector<Collectible*> collectibles;
 
 	void UpdateObstacles();
 	void UpdateCollectibles();
