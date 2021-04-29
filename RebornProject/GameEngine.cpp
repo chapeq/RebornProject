@@ -23,7 +23,7 @@ GameEngine::GameEngine()
 
 	ImGui::SFML::Init(m_window);
 
-	float deltaTime{ 1.0f / MAX_FRAMERATE };
+	float deltaTime{1.0f / MAX_FRAMERATE };
 	sf::Clock clock;
 	m_Timer = new TimeManager(clock, deltaTime);
 }

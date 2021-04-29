@@ -20,11 +20,10 @@ public:
 
 
 	// AI part - in progress 
-	void MoveToCollect(std::vector<Collectible*> collectibles, std::vector<Obstacle*> obstacles, sf::Vector2f windowSize, float time);
-	bool IsAvoidingObstacles(std::vector<Obstacle*> obstacles, sf::Vector2f windowSize, float time);
-	bool CanMove(std::vector<Obstacle*> obstacles);
+	void MoveToCollect(std::vector<Collectible*> collectibles,float time);
+	bool IsCollidingObstacle(std::vector<Obstacle*> obstacles);
+	void AvoidObstacle(std::vector<Obstacle*> obstacles, sf::Vector2f windowSize, float time);
 	void DrawBounds(sf::RenderTarget& target);
-
 
 private:
 	sf::CircleShape* m_cercle;

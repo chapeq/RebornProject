@@ -22,7 +22,13 @@ void GetInitConfig(Parameters& out)
 
 			std::size_t delimiterPos = line.find("=");
 			std::string param = line.substr(0, delimiterPos);
-
+			if (param == "ActivateAI")
+			{
+				if (line.substr(delimiterPos + 1) == "true")
+					out.AIOn = true;
+				else if (line.substr(delimiterPos + 1) == "false")
+					out.AIOn = false;
+			}
 			if (param == "Increasedifficulty")
 			{
 				if (line.substr(delimiterPos + 1) == "true")

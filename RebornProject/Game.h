@@ -6,6 +6,13 @@
 #include "Config.h"
 #include <vector>
 
+enum class AIPlayerMove
+{
+	GoToCollect,
+	Stay,
+	AvoidObstacle
+};
+
 struct GameSimulation {
 	Player* player;
 	std::vector<Obstacle*> obstacles;
@@ -26,10 +33,7 @@ private:
 	Parameters initConfig;
 	Parameters currentConfig;
 	Parameters tempConfig;
-	GameSimulation game;
-	//Player* player;
-	//std::vector<Obstacle*> obstacles;
-	//std::vector<Collectible*> collectibles;
+	GameSimulation currentState;
 
 	void UpdateObstacles();
 	void UpdateCollectibles();
@@ -39,5 +43,6 @@ private:
 	void CheckCollectibleSpawn();
 	void LoseAndReborn();
 	bool CheckIfGameOver();
+	bool ComputeStep(GameSimulation state, float deltaTime, AIPlayerMove move);
 };
 

@@ -20,7 +20,6 @@
     <ClCompile Include="..\external\imgui-master\imgui_tables.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="AudioManager.cpp">
       <Filter>GameManager</Filter>
@@ -49,6 +48,7 @@
     <ClCompile Include="Config.cpp">
       <Filter>ExternalConfig</Filter>
     </ClCompile>
+    <ClCompile Include="Game.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -61,7 +61,6 @@
     <ClInclude Include="..\external\imgui-sfml-master\imgui-SFML.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="AudioManager.h">
       <Filter>GameManager</Filter>
@@ -90,6 +89,7 @@
     <ClInclude Include="Config.h">
       <Filter>ExternalConfig</Filter>
     </ClInclude>
+    <ClInclude Include="Game.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">

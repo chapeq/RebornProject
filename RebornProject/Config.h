@@ -1,6 +1,7 @@
 #pragma once
 
 struct Parameters {
+	bool AIOn;
 	bool increaseDifficulty;
 	float collectibleSpeed;
 	float obstacleSpeed;
