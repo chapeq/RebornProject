@@ -19,24 +19,24 @@ Game::Game() : GameEngine{}
 Game::~Game()
 {
 	delete currentState.player;
-	for (auto& c : currentState.collectibles)
+	for (auto& collectible : currentState.collectibles)
 	{
-		delete c;
+		delete collectible;
 	}
-	for (auto& o : currentState.obstacles)
+	for (auto& obstacle : currentState.obstacles)
 	{
-		delete o;
+		delete obstacle;
 	}
 }
 
 
 void Game::SpawnObstacles()
 {
-	Obstacle* obst = new Obstacle(currentConfig.obstacleSpeed);
-	float x = static_cast<float>(rand() % static_cast<int>(m_windowSize.x - obst->GetSize().x) + (obst->GetSize().x / 2));
+	Obstacle* obstacle = new Obstacle(currentConfig.obstacleSpeed);
+	float x = static_cast<float>(rand() % static_cast<int>(m_windowSize.x - obstacle->GetSize().x) + (obstacle->GetSize().x / 2));
 	float y = -20.0f; //offset
-	obst->SetPosition(sf::Vector2f(x, y));
-	currentState.obstacles.push_back(obst);
+	obstacle->SetPosition(sf::Vector2f(x, y));
+	currentState.obstacles.push_back(obstacle);
 }
 
 
@@ -107,18 +107,18 @@ void Game::UpdateObstacles()
 void Game::SpawnCollectibles()
 {
 	int randNbrCol = rand() % currentConfig.nbrMaxCollectible + 1;
-	Collectible* firstCol = new Collectible(currentConfig.collectibleSpeed);
-	float x = static_cast<float>(rand() % static_cast<int>(m_windowSize.x - (firstCol->GetRadius() * 2)) + (firstCol->GetRadius()));
+	Collectible* FirstColl = new Collectible(currentConfig.collectibleSpeed);
+	float x = static_cast<float>(rand() % static_cast<int>(m_windowSize.x - (FirstColl->GetRadius() * 2)) + (FirstColl->GetRadius()));
 	float y = -20.0f; //offset
-	firstCol->SetPosition(sf::Vector2f(x, y));
-	currentState.collectibles.push_back(firstCol);
+	FirstColl->SetPosition(sf::Vector2f(x, y));
+	currentState.collectibles.push_back(FirstColl);
 
 	//Spawn next collectibles with 10.f offset between each other on y axis
 	for (int i = 1; i < randNbrCol + 1; i++)
 	{
-		Collectible* nextCol = new Collectible(currentConfig.collectibleSpeed);
-		nextCol->SetPosition(sf::Vector2f(x, i * ((nextCol->GetRadius() * 2) + 10.0f)));
-		currentState.collectibles.push_back(nextCol);
+		Collectible* nextColl = new Collectible(currentConfig.collectibleSpeed);
+		nextColl->SetPosition(sf::Vector2f(x, i * ((nextColl->GetRadius() * 2) + 10.0f)));
+		currentState.collectibles.push_back(nextColl);
 	}
 
 }
@@ -126,11 +126,11 @@ void Game::SpawnCollectibles()
 void Game::CheckCollectibleSpawn()
 {
 	//Erase if collide with obstacle
-	for (auto& e : currentState.obstacles)
+	for (auto& obstacle : currentState.obstacles)
 	{
 		for (int i = currentState.collectibles.size() - 1; i >= 0; i--)
 		{
-			if (currentState.collectibles[i]->GetBounds().intersects(e->GetBounds()))
+			if (currentState.collectibles[i]->GetBounds().intersects(obstacle->GetBounds()))
 			{
 				delete currentState.collectibles[i];
 				currentState.collectibles.erase(currentState.collectibles.begin() + i);
@@ -197,13 +197,13 @@ void Game::LoseAndReborn()
 		m_State = GameState::Lose;
 		m_manager.Losing();
 
-		for (auto& c : currentState.collectibles)
+		for (auto& collectible : currentState.collectibles)
 		{
-			delete c;
+			delete collectible;
 		}
-		for (auto& o : currentState.obstacles)
+		for (auto& obstacle : currentState.obstacles)
 		{
-			delete o;
+			delete obstacle;
 		}
 		currentState.obstacles.clear();
 		currentState.collectibles.clear();
@@ -214,30 +214,6 @@ void Game::LoseAndReborn()
 		currentState.player->SetPosition(sf::Vector2f(m_windowSize.x / 2, m_windowSize.y - 50));
 
 	}
-}
-
-bool Game::ComputeStep(GameSimulation state, float deltaTime, AIPlayerMove move)
-{
-	GameSimulation tempState = state;
-	bool isColliding = false;
-	for (int i = 0; i < tempState.obstacles.size(); i++)
-	{
-		//Move Down
-		tempState.obstacles[i]->Move(deltaTime);
-	}
-
-	for (int i = 0; i < tempState.collectibles.size(); i++)
-	{
-		//Move Down
-		tempState.collectibles[i]->Move(deltaTime);
-	}
-	if (move == AIPlayerMove::GoToCollect)
-	{
-		tempState.player->MoveToCollect(tempState.collectibles, deltaTime);
-		tempState.player->CheckWindowBounds(m_windowSize);
-	}
-	isColliding = tempState.player->IsCollidingObstacle(tempState.obstacles);
-	return isColliding;
 }
 
 
@@ -251,26 +227,13 @@ void Game::Update()
 
 	if (currentConfig.AIOn)
 	{
-		float simuTime = m_Timer->GetDeltaTime() / 2;
-		bool collision = ComputeStep(currentState, simuTime, AIPlayerMove::GoToCollect);
-		if (!collision)
-		{
-			currentState.player->MoveToCollect(currentState.collectibles, m_Timer->GetDeltaTime());
-		}
-		else
-		{
-			collision = ComputeStep(currentState, simuTime, AIPlayerMove::Stay);
-			if(collision)
-			{
-				currentState.player->AvoidObstacle(currentState.obstacles, m_windowSize, m_Timer->GetDeltaTime());
-			}
-		}
-		
+		aiPlayer.MoveAI(currentState, m_windowSize, m_Timer->GetDeltaTime());
 	}
 	else
 	{
 		currentState.player->Move(m_Timer->GetDeltaTime());
 	}
+	
 	currentState.player->CheckWindowBounds(m_windowSize);
 
 	if (m_Timer->TriggerLevelUp() && currentConfig.increaseDifficulty)
@@ -281,22 +244,22 @@ void Game::Update()
 		m_Timer->SetObstacleSpawnTime(m_Timer->GetObstacleSpawnTime() - 0.05f);
 		currentState.player->SetSpeed(currentState.player->GetSpeed() + 30.0f);
 	}
-	
+
 }
 
 void Game::Render(sf::RenderTarget& target)
 {
 	target.clear();
 	m_manager.DrawUI(target);
-	for (auto& c : currentState.collectibles)
+	for (auto& collectible : currentState.collectibles)
 	{
-		c->Draw(target);
+		collectible->Draw(target);
 	}
-	for (auto& o : currentState.obstacles)
+	for (auto& obstacle : currentState.obstacles)
 	{
-		o->Draw(target);
+		obstacle->Draw(target);
 	}
-	currentState.player->DrawBounds(target); // debug colliders for AI part
+	//currentState.player->DrawBounds(target); // debug colliders for AI part
 	currentState.player->Draw(target);
 }
 
@@ -304,6 +267,7 @@ void Game::Render(sf::RenderTarget& target)
 
 void Game::RenderDebugMenu(sf::RenderTarget& target)
 {
+	
 	ImGui::Begin("Configuration window");
 	ImGui::NewLine();
 	ImGui::Checkbox("Activate AI", &tempConfig.AIOn);

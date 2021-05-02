@@ -1,5 +1,6 @@
 # Config file
 
+Activate AI = false
 Increase difficulty = true
 Collectible speed = 300.0
 Obstacle speed = 300.0

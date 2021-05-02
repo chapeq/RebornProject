@@ -49,6 +49,7 @@
       <Filter>ExternalConfig</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="AI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -90,6 +91,8 @@
       <Filter>ExternalConfig</Filter>
     </ClInclude>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="AI.h" />
+    <ClInclude Include="ItemsStructure.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">

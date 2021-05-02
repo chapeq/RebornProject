@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "TimeManager.h"
-#include <iostream>
 
 static const float INCREASE_DIFFICULTY_TIME{ 10.f };
 

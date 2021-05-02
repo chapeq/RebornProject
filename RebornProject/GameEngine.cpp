@@ -2,7 +2,6 @@
 #include "GameEngine.h"
 #include <iostream>
 
-
 static const int MAX_FRAMERATE{ 60 };
 static const sf::Vector2f WINDOW_SIZE{ 800, 600 };
 static const char* APP_NAME = "REBORN";
@@ -23,7 +22,7 @@ GameEngine::GameEngine()
 
 	ImGui::SFML::Init(m_window);
 
-	float deltaTime{1.0f / MAX_FRAMERATE };
+	float deltaTime{ 1.0f / MAX_FRAMERATE };
 	sf::Clock clock;
 	m_Timer = new TimeManager(clock, deltaTime);
 }
@@ -36,8 +35,6 @@ GameEngine::~GameEngine()
 
 void GameEngine::RunGameLoop()
 {
-	bool toggleImGui = true;
-
 	while (m_window.isOpen())
 	{
 		m_Timer->RestartClock();
@@ -80,10 +77,7 @@ void GameEngine::RunGameLoop()
 		RenderDebugMenu(m_window);
 
 		ImGui::EndFrame();
-		if (toggleImGui)
-		{
-			ImGui::SFML::Render(m_window);
-		}
+		ImGui::SFML::Render(m_window);
 
 		m_window.display();
 

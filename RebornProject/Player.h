@@ -30,4 +30,5 @@ private:
 	sf::RectangleShape* m_frontCollider;
 	sf::RectangleShape* m_sideCollider;
 	int m_score;
+	float m_speedAI;
 };

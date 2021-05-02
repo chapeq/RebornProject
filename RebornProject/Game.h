@@ -1,23 +1,7 @@
 #pragma once
 #include "GameEngine.h"
-#include "Player.h"
-#include "Obstacle.h"
-#include "Collectible.h"
 #include "Config.h"
-#include <vector>
-
-enum class AIPlayerMove
-{
-	GoToCollect,
-	Stay,
-	AvoidObstacle
-};
-
-struct GameSimulation {
-	Player* player;
-	std::vector<Obstacle*> obstacles;
-	std::vector<Collectible*> collectibles;
-};
+#include "AI.h"
 
 class Game : public GameEngine
 {
@@ -34,7 +18,8 @@ private:
 	Parameters currentConfig;
 	Parameters tempConfig;
 	GameSimulation currentState;
-
+	AI aiPlayer; 
+	
 	void UpdateObstacles();
 	void UpdateCollectibles();
 	void SpawnObstacles();
@@ -43,6 +28,6 @@ private:
 	void CheckCollectibleSpawn();
 	void LoseAndReborn();
 	bool CheckIfGameOver();
-	bool ComputeStep(GameSimulation state, float deltaTime, AIPlayerMove move);
+
 };
 

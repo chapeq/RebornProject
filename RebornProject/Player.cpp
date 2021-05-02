@@ -1,6 +1,7 @@
 #include <stdafx.h>
 #include <Player.h>
-#include <iostream>
+
+static const float AI_SPEED{ 3.0f };
 
 Player::Player(float speed, float radius)
 {
@@ -11,8 +12,9 @@ Player::Player(float speed, float radius)
 	m_cercle->setPosition(0, 0);
 	m_speed = speed;
 	m_score = 0;
-
-	// Colliders for AI part - in development
+	m_speedAI = AI_SPEED;
+	
+	// Colliders for AI part
 	m_frontCollider = new sf::RectangleShape(sf::Vector2f(m_cercle->getRadius() * 2, m_cercle->getRadius() * 6));
 	m_frontCollider->setOrigin(m_frontCollider->getSize().x / 2, m_frontCollider->getSize().y);
 	m_frontCollider->setPosition(m_cercle->getPosition());
@@ -82,48 +84,43 @@ void Player::AddPoints(int points)
 }
 
 
-/**** AI Development part - in progress****/
+/**** AI Development part - WorkInProgress ****/
 
 /*
-AI implementation
-AI move towards collectible
-Check if obstacle is at a certain distance
-Move away from obstacle
-
-solutions :
-- get collectible pos and move to this pos
-
-- use Raycast to detect obstacle, or simple line intersection
- since intersection is only on y axis
-- use box collider to detect collision in front of circle then move away
-- compare obstacle pos and player pos
-
-29/04/2021
-Simulate obstacles & collectibles move at deltaTime/2
-Simulate player move to next collectible at deltaTime/2
+Simulate obstacles & collectibles move at deltaTime/10
+Simulate player move to next collectible at deltaTime/10
 Check if will collide
- - if no futur collision  -> move player to collectible at deltaTime
+ - if no futur collision -> move player to collectible at deltaTime
  - if futur collision ->
-		- Don't move Player - Check if will collide with obstacle at deltaTime/2 :
+		- Don't move Player - Check if will collide with obstacle at deltaTime/10 :
 				- if no collision -> don't move player
 				- if futur collision -> Move Player at pos + size of obstacle
+
+Last part player moving away from obstacle needs to be improve.
+
+Actual algo : - if player is on the LEFT side on the window, player moves from its position to the RIGHT side
+at position + player radius + obstacle size.
+- if player is on the RIGHT side on the window, player moves from its position to the LEFT side
+at position + player radius + obstacle size.
+Problem : Sometimes the obstacle to avoid is on the left side of the player and the player is trying to avoiding
+it by moving on the left (and vice versa), but it does not have time to avoid it.
+
+Possible Solutions : - Move the player sooner / detect the collision sooner , so the player has time to avoid the
+obstacle regardless of the direction. (FAILED to implement this solution).
+- Detect on wich side of the obstacle is the collision point : if the player will collide on the left part of the
+obstacle -> Move the player to the left. Conversely, if the player collide on the right side of the obstacle
+-> Move it on to the right. 
+ 
  */
-
-
-
 
 
 bool Player::IsCollidingObstacle(std::vector<Obstacle*> obstacles)
 {
-
 	if (obstacles.empty())
 	{
 		return false;
 	}
-
-	bool collision = false;
-	float pos = m_cercle->getPosition().x;
-
+	
 	m_frontCollider->setSize(sf::Vector2f(m_cercle->getRadius() * 2, m_cercle->getRadius() * 6));
 	m_frontCollider->setOrigin(m_frontCollider->getSize().x / 2, m_frontCollider->getSize().y);
 	m_frontCollider->setPosition(m_cercle->getPosition());
@@ -134,17 +131,14 @@ bool Player::IsCollidingObstacle(std::vector<Obstacle*> obstacles)
 
 	for (int i = 0; i < obstacles.size(); i++)
 	{
-		if ((m_frontCollider->getGlobalBounds().intersects(
-			obstacles[i]->GetBounds())) || (m_sideCollider->getGlobalBounds().intersects(
-				obstacles[i]->GetBounds())))
+		if ((m_frontCollider->getGlobalBounds().intersects(obstacles[i]->GetBounds())) 
+			||(m_sideCollider->getGlobalBounds().intersects(obstacles[i]->GetBounds())))
 		{
-
-			collision = true;
-			std::cout << "Obstacle to avoid : " << obstacles[i]->GetPosition().x <<"  "<< obstacles[i]->GetPosition().y << std::endl;
+			return true;	
 		}
 	}
 
-	return collision;
+	return false;
 }
 
 
@@ -156,7 +150,7 @@ void Player::MoveToCollect(std::vector<Collectible*> collectibles, float time)
 	}
 
 	float dest = collectibles[0]->GetPosition().x;
-	float moveto = m_cercle->getPosition().x + (dest - m_cercle->getPosition().x) * 3 * time;
+	float moveto = m_cercle->getPosition().x + (dest - m_cercle->getPosition().x) * m_speedAI * time;
 	
 	m_cercle->setPosition(moveto, m_cercle->getPosition().y);
 	m_frontCollider->setPosition(m_cercle->getPosition());
@@ -181,11 +175,10 @@ void Player::AvoidObstacle(std::vector<Obstacle*> obstacles, sf::Vector2f window
 		pos += obstacles[0]->GetSize().x + m_cercle->getRadius();
 	}
 
-	float moveto = m_cercle->getPosition().x + (pos - m_cercle->getPosition().x) * 3 * time;
+	float moveto = m_cercle->getPosition().x + (pos - m_cercle->getPosition().x) * m_speedAI * time;
 	m_cercle->setPosition(moveto, m_cercle->getPosition().y);
 	m_frontCollider->setPosition(m_cercle->getPosition());
 	m_sideCollider->setPosition(m_cercle->getPosition());
-
 }
 
 
